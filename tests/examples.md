@@ -1,285 +1,255 @@
 # Humanizer Test Cases
 
-These are behavioral fixtures for a Persian writing skill. They test writing quality, meaning preservation, register control, and protected content—not authorship detection or detector evasion.
+These are behavioral fixtures for a Persian writing skill. They test naturalness, semantic preservation, register control, voice preservation, protected content, and unnecessary editing—not authorship detection.
 
-There is no single correct rewrite. Evaluate each case against the listed characteristics and forbidden changes. An acceptable result may use different words or sentence boundaries while preserving the same constraints.
+There is no single correct rewrite. Evaluate each case against the listed diagnosis, expected intervention, and forbidden changes.
 
 ## 1. Overly formal Persian
 
-### Input
+**Input:** «بدین‌وسیله به استحضار می‌رساند درخواست شما در حال بررسی می‌باشد و نتیجه نهایی متعاقباً اعلام خواهد گردید.»
 
-«بدین‌وسیله به استحضار می‌رساند درخواست شما در حال بررسی می‌باشد و نتیجه نهایی متعاقباً اعلام خواهد گردید.»
+**Expected intervention:** `MINOR`
 
-### Should detect
+**Should detect:** bureaucratic padding in an ordinary support-style status message.
 
-`بدین‌وسیله`, `به استحضار می‌رساند`, `می‌باشد`, and `اعلام خواهد گردید` create bureaucratic padding. The formal channel itself is not a problem.
-
-### Acceptable rewrite characteristics
-
-Keep a formal, courteous support register and use direct forms such as «درخواست شما در حال بررسی است». State the next communication without adding a deadline.
-
-### Forbidden changes
-
-Do not make it slangy, claim approval, invent a timeframe, or remove the status information.
+**Forbidden:** slang, invented approval, invented timeframe, removal of status.
 
 ## 2. Generic AI-style blog introduction
 
-### Input
+**Input:** «در دنیای امروز، فناوری با سرعتی بی‌سابقه در حال پیشرفت است. در عصر حاضر، اهمیت این موضوع بر کسی پوشیده نیست. در این مقاله قصد داریم به بررسی نقش آن در زندگی روزمره بپردازیم.»
 
-«در دنیای امروز، فناوری با سرعتی بی‌سابقه در حال پیشرفت است. در عصر حاضر، اهمیت این موضوع بر کسی پوشیده نیست. در این مقاله قصد داریم به بررسی نقش آن در زندگی روزمره بپردازیم.»
+**Expected intervention:** `REWRITE`
 
-### Should detect
+**Should detect:** ceremonial framing, stacked time phrases, roadmap before content.
 
-Ceremonial openings, repeated time framing, unsupported generality, and an essay-boilerplate promise to discuss the topic.
-
-### Acceptable rewrite characteristics
-
-Start with the actual topic or claim. Keep only context that helps the reader understand the article, and use a specific consequence if the source provides one.
-
-### Forbidden changes
-
-Do not add statistics, trends, examples, or a stronger thesis that the input does not support.
+**Forbidden:** invented statistics, examples, trend claims, or stronger thesis.
 
 ## 3. Marketing copy
 
-### Input
+**Input:** «با استفاده از این راهکار جامع و قدرتمند، تجربه‌ای بی‌نظیر و منحصربه‌فرد را در سطحی جدید تجربه کنید. این محصول نوآورانه و پیشرفته، تحولی بزرگ در کسب‌وکار شما ایجاد می‌کند.»
 
-«با استفاده از این راهکار جامع و قدرتمند، تجربه‌ای بی‌نظیر و منحصربه‌فرد را در سطحی جدید تجربه کنید. این محصول نوآورانه و پیشرفته، تحولی بزرگ در کسب‌وکار شما ایجاد می‌کند.»
+**Expected intervention:** `REWRITE`
 
-### Should detect
+**Should detect:** unsupported adjective stack and transformation promise.
 
-Stacked promotional adjectives, duplicated praise, and a promise of transformation without a concrete mechanism or outcome.
-
-### Acceptable rewrite characteristics
-
-Keep persuasive intent and brand energy, but lead with a concrete capability or user benefit already supported by the source. Remove unsupported superlatives.
-
-### Forbidden changes
-
-Do not invent features, metrics, customers, market position, or a guaranteed business result.
+**Forbidden:** invented features, metrics, customers, market position, guaranteed results.
 
 ## 4. Customer-support message
 
-### Input
+**Input:** «ضمن تشکر از همراهی شما، به اطلاع می‌رساند مشکل اعلام‌شده در دست بررسی می‌باشد و تیم فنی در اسرع وقت نسبت به رفع آن اقدام خواهد نمود. از صبوری شما سپاسگزاریم.»
 
-«ضمن تشکر از همراهی شما، به اطلاع می‌رساند مشکل اعلام‌شده در دست بررسی می‌باشد و تیم فنی در اسرع وقت نسبت به رفع آن اقدام خواهد نمود. از صبوری شما سپاسگزاریم.»
+**Expected intervention:** `MINOR`
 
-### Should detect
+**Should detect:** ceremony, vague deadline language, padded verb forms.
 
-Ceremonial framing, `می‌باشد`, `در اسرع وقت`, `نسبت به رفع ... اقدام خواهد نمود`, and a vague promise. Some politeness is appropriate.
-
-### Acceptable rewrite characteristics
-
-Use a direct acknowledgement, current status, and next action. Preserve the fact that the technical team is investigating and keep a concise polite closing if the channel requires it.
-
-### Forbidden changes
-
-Do not promise resolution, add a deadline, remove a ticket or incident detail, or make the message dismissive.
+**Forbidden:** promise of resolution or new deadline.
 
 ## 5. Telegram or social-media text
 
-### Input
+**Input:** «سلام بچه‌ها. در عصر حاضر، لازم به ذکر است که دورهمی فردا در راستای ایجاد تعامل بیشتر برگزار می‌گردد. بدین منظور لطفاً رأس ساعت ۸ تشریف بیارید.»
 
-«سلام بچه‌ها. در عصر حاضر، لازم به ذکر است که دورهمی فردا در راستای ایجاد تعامل بیشتر برگزار می‌گردد. بدین منظور لطفاً رأس ساعت ۸ تشریف بیارید.»
+**Expected intervention:** `REWRITE`
 
-### Should detect
+**Should detect:** register collision.
 
-Register collision: formal and ceremonial phrases in an informal group message. The time and invitation are useful facts.
-
-### Acceptable rewrite characteristics
-
-Use natural spoken Persian suited to the writer and channel, for example a shorter invitation that preserves the date/time and purpose. Keep the existing level of warmth.
-
-### Forbidden changes
-
-Do not add fake typos, slang, emojis, or a more familiar relationship than the source establishes. Do not change the time.
+**Forbidden:** fake typos, new slang, emojis, changed time.
 
 ## 6. Academic writing
 
-### Input
+**Input:** «نتایج به‌دست‌آمده به‌وضوح نشان می‌دهد که روش پیشنهادی تحولی قابل توجه در این حوزه ایجاد کرده و می‌تواند نقش کلیدی در پژوهش‌های آینده ایفا کند.»
 
-«نتایج به‌دست‌آمده به‌وضوح نشان می‌دهد که روش پیشنهادی تحولی قابل توجه در این حوزه ایجاد کرده و می‌تواند نقش کلیدی در پژوهش‌های آینده ایفا کند.»
+**Expected intervention:** `MINOR`
 
-### Should detect
+**Should detect:** significance inflation and broad future claim.
 
-Unsupported significance (`تحولی قابل توجه`, `نقش کلیدی`) and a broad future claim. The academic register should remain formal and cautious.
-
-### Acceptable rewrite characteristics
-
-Tie the sentence to the reported experiment or metric if the input contains one; otherwise use a modest claim such as improvement under the reported conditions. Preserve justified uncertainty.
-
-### Forbidden changes
-
-Do not invent a baseline, result, dataset, limitation, citation, or external validity claim. Do not turn the paragraph into casual Persian.
+**Forbidden:** invented baseline, dataset, citation, limitation, or stronger certainty.
 
 ## 7. Technical documentation
 
-### Input
+**Input:** «این endpoint به‌عنوان بستری برای احراز هویت عمل می‌نماید و امکان ارسال توکن را فراهم می‌آورد. به‌منظور استفاده از آن، کاربر می‌بایست ابتدا درخواست را ارسال نموده و سپس پاسخ را مورد بررسی قرار دهد.»
 
-«این endpoint به‌عنوان بستری برای احراز هویت عمل می‌نماید و امکان ارسال توکن را فراهم می‌آورد. به‌منظور استفاده از آن، کاربر می‌بایست ابتدا درخواست را ارسال نموده و سپس پاسخ را مورد بررسی قرار دهد.»
+**Expected intervention:** `REWRITE`
 
-### Should detect
+**Should detect:** bureaucratic technical phrasing.
 
-Indirect verbs and bureaucratic technical phrasing: `عمل می‌نماید`, `فراهم می‌آورد`, `به‌منظور`, `می‌بایست`, `ارسال نموده`, and `مورد بررسی قرار دهد`.
-
-### Acceptable rewrite characteristics
-
-Use concise, unambiguous instructions and preserve `endpoint`, token behavior, request order, and any API terminology. Keep passive voice only when it is clearer.
-
-### Forbidden changes
-
-Do not rename an API concept, alter the request/response sequence, change a command, or translate a protected identifier.
+**Forbidden:** renamed API concept, changed order, changed command or token behavior.
 
 ## 8. Translated-English Persian
 
-### Input
+**Input:** «این قابلیت یک نقش مهم در تجربه کاربری بازی می‌کند و به کاربران اجازه می‌دهد که آن‌ها فایل را آپلود کرده و خروجی را دریافت نمایند.»
 
-«این قابلیت یک نقش مهم در تجربه کاربری بازی می‌کند و به کاربران اجازه می‌دهد که آن‌ها فایل را آپلود کرده و خروجی را دریافت نمایند.»
+**Expected intervention:** `REWRITE`
 
-### Should detect
+**Should detect:** literal predicate, unnecessary pronoun, indirect verb.
 
-English-shaped collocations, an unnecessary pronoun, a heavy noun phrase, and an indirect verb. The intended behavior is still clear.
-
-### Acceptable rewrite characteristics
-
-Use native Persian information flow and direct verbs, such as «این قابلیت به کاربر اجازه می‌دهد فایل را آپلود کند و خروجی بگیرد»، while preserving the capability and technical term if appropriate.
-
-### Forbidden changes
-
-Do not infer a different user role, add a file format, promise speed, or replace an established technical term without reason.
+**Forbidden:** different user role, file format, speed promise, new capability.
 
 ## 9. Bullet-heavy writing
 
-### Input
+**Input:** «مزایای این سرویس عبارت‌اند از: ۱) ثبت درخواست را ساده می‌کند. ۲) گزارش در اختیار مدیران می‌گذارد. ۳) تجربه‌ای نوآورانه و پیشرفته ایجاد می‌کند.»
 
-«مزایای این سرویس عبارت‌اند از:
+**Expected intervention:** `MINOR`
 
-- این سرویس فرایند ثبت درخواست را ساده می‌کند و به کاربران امکان می‌دهد اطلاعات خود را در یک محیط یکپارچه وارد کنند.
-- این سرویس با ارائه گزارش‌های دقیق، دید جامعی از وضعیت فرایند در اختیار مدیران قرار می‌دهد.
-- این سرویس با استفاده از ابزارهای پیشرفته، تجربه‌ای متفاوت و راهکاری نوآورانه برای تیم‌ها فراهم می‌کند.»
+**Should detect:** concrete items mixed with generic praise.
 
-### Should detect
-
-Three parallel bullets mix concrete behavior with generic claims, and each bullet is a long mini-paragraph. The list may still be appropriate if the items are product features.
-
-### Acceptable rewrite characteristics
-
-Keep a compact list if the items are genuinely parallel, or turn them into prose if they form one explanation. Remove unsupported praise and preserve each distinct capability.
-
-### Forbidden changes
-
-Do not delete a real requirement, merge unrelated features, reorder a workflow, or invent what the reports contain.
+**Forbidden:** deletion of real capability or invented report content.
 
 ## 10. Repetitive transitions
 
-### Input
+**Input:** «علاوه بر این، سامانه گزارش‌ها را ذخیره می‌کند. همچنین، کاربران می‌توانند گزارش‌ها را به‌صورت PDF دریافت کنند. از سوی دیگر، مدیران امکان مشاهده وضعیت درخواست‌ها را دارند. در نتیجه، این سامانه راهکاری جامع و قدرتمند است.»
 
-«علاوه بر این، سامانه گزارش‌ها را ذخیره می‌کند.
+**Expected intervention:** `REWRITE`
 
-همچنین، کاربران می‌توانند گزارش‌ها را به‌صورت PDF دریافت کنند.
+**Should detect:** marker density and generic conclusion.
 
-از سوی دیگر، مدیران امکان مشاهده وضعیت درخواست‌ها را دارند.
-
-در نتیجه، این سامانه راهکاری جامع و قدرتمند برای مدیریت فرایندهاست.»
-
-### Should detect
-
-Repeated paragraph-opening transitions and a generic conclusion that restates the features as praise.
-
-### Acceptable rewrite characteristics
-
-Keep a connector only where the relationship matters, vary the paragraph openings naturally, and end with a concrete consequence or stop after the last supported feature.
-
-### Forbidden changes
-
-Do not remove the PDF capability, change who can see the requests, or turn the final sentence into a stronger product claim.
+**Forbidden:** removal of PDF capability or actor permissions.
 
 ## 11. Already-good Persian
 
-### Input
+**Input:** «نسخه جدید امروز منتشر شد. زمان بارگذاری صفحه اصلی کمتر شده و تنظیمات قبلی هم باقی مانده است. اگر مشکلی دیدید، در issue گزارش دهید.»
 
-«نسخه جدید امروز منتشر شد. زمان بارگذاری صفحه اصلی کمتر شده و تنظیمات قبلی هم باقی مانده است. اگر مشکلی دیدید، در issue گزارش دهید.»
+**Expected intervention:** `KEEP`
 
-### Should detect
+**Should detect:** no required style defect.
 
-No required style problem. The mix of Persian and `issue` may be intentional technical usage, and `هم` gives the sentence a natural tone.
-
-### Acceptable rewrite characteristics
-
-Leave it unchanged or make only a clearly justified punctuation or terminology correction. Preserve its concise semi-formal register.
-
-### Forbidden changes
-
-Do not add an introduction, transitions, synonyms, a conclusion, or more formal vocabulary just to show activity.
+**Forbidden:** introduction, synonym rotation, conclusion, unnecessary formalization.
 
 ## 12. Intentionally colloquial Persian
 
-### Input
+**Input:** «راستش این اپ رو برای کارهای روزمره‌م دوست دارم. سریع باز می‌شه، ولی بخش جست‌وجوش هنوز یه کم اذیتم می‌کنه.»
 
-«راستش این اپ رو برای کارهای روزمره‌م دوست دارم. سریع باز می‌شه، ولی بخش جست‌وجوش هنوز یه کم اذیتم می‌کنه.»
+**Expected intervention:** `KEEP`
 
-### Should detect
+**Should detect:** contractions and personal voice are intentional.
 
-No artificial pattern requires correction. Contractions and the personal evaluation are part of the voice.
-
-### Acceptable rewrite characteristics
-
-Preserve `رو`, `می‌شه`, `یه کم`, and the informal cadence. Edit only if the user requests a different register or a specific clarity fix.
-
-### Forbidden changes
-
-Do not convert it into formal prose, add corporate praise, replace the personal view with a generic claim, or manufacture slang.
+**Forbidden:** standardization, corporate praise, manufactured slang.
 
 ## 13. Persian mixed with English technical terminology
 
-### Input
+**Input:** «برای deploy سرویس، اول `.env.example` را کپی کن، مقدار `DATABASE_URL` را تنظیم کن و بعد `npm run build` را اجرا کن. API در endpoint `/v1/jobs` درخواست‌های جدید را می‌گیرد.»
 
-«برای deploy سرویس، اول `.env.example` را کپی کن، مقدار `DATABASE_URL` را تنظیم کن و بعد `npm run build` را اجرا کن. API در endpoint `/v1/jobs` درخواست‌های جدید را می‌گیرد.»
+**Expected intervention:** `KEEP`
 
-### Should detect
+**Should detect:** protected technical mixing, not a defect.
 
-No automatic problem. English technical terms, code spans, environment variable names, commands, and the endpoint are protected or intentionally used by the audience.
-
-### Acceptable rewrite characteristics
-
-Improve only surrounding Persian if needed. Keep every code span, identifier, command, path, and API term exact; keep the instructional register consistent.
-
-### Forbidden changes
-
-Do not translate or reformat code, rename `DATABASE_URL`, change the command, alter the endpoint, or introduce a different deployment step.
+**Forbidden:** changing any code span, identifier, command, path, or API term.
 
 ## 14. Quoted material that must remain untouched
 
-### Input
+**Input:** مدیر نوشت: «در راستای ارتقای کیفیت، بدین‌وسیله اعلام می‌گردد که فرایند جدید از فردا اجرا خواهد شد.» سپس تیم مراحل اجرا را توضیح داد.
 
-مدیر در اطلاعیه نوشت: «در راستای ارتقای کیفیت، بدین‌وسیله اعلام می‌گردد که فرایند جدید از فردا اجرا خواهد شد.» سپس تیم توضیح کوتاهی درباره مراحل اجرا منتشر کرد.
+**Expected intervention:** `KEEP` or `MINOR` outside the quote only.
 
-### Should detect
+**Should detect:** bureaucratic wording is protected quotation.
 
-The quoted announcement contains bureaucratic phrasing, but it is attributed and protected. The surrounding sentence can be edited if it is awkward.
-
-### Acceptable rewrite characteristics
-
-Leave the quotation and attribution unchanged. If requested, make a minimal edit only to the surrounding narration, such as making the second sentence more direct.
-
-### Forbidden changes
-
-Do not modernize the quote, alter its punctuation or meaning, change the speaker, or present the quoted wording as the editor's own claim.
+**Forbidden:** any quotation change.
 
 ## 15. Factual and citation-heavy text
 
-### Input
+**Input:** «طبق گزارش مرکز آمار ایران، در سال ۱۴۰۲ تعداد کاربران این خدمت به ۲٫۴ میلیون نفر رسید [1]. با توجه به موارد فوق، می‌توان گفت این روند گامی مهم در راستای تحول دیجیتال کشور محسوب می‌گردد.»
 
-«طبق گزارش مرکز آمار ایران، در سال ۱۴۰۲ تعداد کاربران این خدمت به ۲٫۴ میلیون نفر رسید [1]. با توجه به موارد فوق، می‌توان گفت این روند گامی مهم در راستای تحول دیجیتال کشور محسوب می‌گردد.»
+**Expected intervention:** `MINOR`
 
-### Should detect
+**Should detect:** generic conclusion while preserving the factual sentence.
 
-`با توجه به موارد فوق`, `گامی مهم`, `در راستای`, and `محسوب می‌گردد` add a generic conclusion. The institution, year, number, and citation are protected factual content.
+**Forbidden:** changes to `۱۴۰۲`, `۲٫۴`, `[1]`, institution, or certainty.
 
-### Acceptable rewrite characteristics
+## 16. Redundant subject pronouns
 
-Keep the source name, Persian digits, number, year, citation marker, and cautious level of the claim. Replace or remove the generic conclusion without adding an interpretation that the citation does not support.
+**Input:** «ما گزارش را بررسی کردیم و ما متوجه شدیم که چند ردیف تکراری است.»
 
-### Forbidden changes
+**Expected intervention:** `MINOR`
 
-Do not change `۱۴۰۲`, `۲٫۴`, `[1]`, the institution, the cited claim, or the certainty level. Do not add a link, source, comparison, or causal explanation.
+**Should detect:** second overt `ما` is unnecessary if no contrast exists.
+
+**Forbidden:** removing first-person authorship or changing the finding.
+
+## 17. Ambiguous subject switch
+
+**Input:** «علی با رضا صحبت کرد و گفت فردا نسخه را می‌فرستد.»
+
+**Expected intervention:** `FLAG`
+
+**Should detect:** pronoun/zero-subject resolution is ambiguous.
+
+**Forbidden:** guessing whether Ali or Reza sends the version.
+
+## 18. Legal formula
+
+**Input:** «مستأجر موظف می‌باشد مبلغ اجاره را تا روز پنجم هر ماه پرداخت نماید.»
+
+**Expected intervention:** `KEEP` or `FLAG`
+
+**Should detect:** formal forms may carry legal genre expectations.
+
+**Forbidden:** changing obligation, deadline, actor, or legal force.
+
+## 19. Academic hedge
+
+**Input:** «این یافته‌ها ممکن است نشان دهد که متغیر X با Y مرتبط است، اما برای نتیجه‌گیری علّی داده کافی نداریم [4].»
+
+**Expected intervention:** `KEEP`
+
+**Should detect:** calibrated uncertainty and limitation are valuable.
+
+**Forbidden:** changing `ممکن است`, causal status, or citation.
+
+## 20. News attribution
+
+**Input:** «سخنگوی وزارتخانه گفت طرح از مهر اجرا می‌شود. سخنگوی وزارتخانه افزود جزئیات آیین‌نامه هفته آینده منتشر خواهد شد.»
+
+**Expected intervention:** `MINOR` or `KEEP`
+
+**Should detect:** repeated attribution may be justified for clarity.
+
+**Forbidden:** ambiguous pronoun replacement or changed chronology.
+
+## 21. Brand slogan repetition
+
+**Input:** «کمتر کلیک کن. کمتر منتظر بمان. کمتر وقت تلف کن.»
+
+**Expected intervention:** `KEEP`
+
+**Should detect:** repetition is intentional rhetoric.
+
+**Forbidden:** synonym variation or prose conversion.
+
+## 22. Over-explained instruction
+
+**Input:** «برای ذخیره فایل، روی دکمه ذخیره کلیک کنید. با کلیک روی این دکمه، فایل ذخیره می‌شود.»
+
+**Expected intervention:** `MINOR`
+
+**Should detect:** second sentence is tautological for the stated audience.
+
+**Forbidden:** removal of a real prerequisite if one exists outside the fixture.
+
+## 23. Fake precision risk
+
+**Input:** «این تغییر عملکرد سامانه را بهتر می‌کند.»
+
+**Expected intervention:** `KEEP` or `FLAG`
+
+**Should detect:** vague claim may be weak, but source gives no metric.
+
+**Forbidden:** adding `۳۰٪`, benchmark, mechanism, or guarantee.
+
+## 24. Sarcasm
+
+**Input:** «عالیه؛ دقیقاً چیزی که لازم داشتیم: یک فرم دیگر با ده تا فیلد اجباری.»
+
+**Expected intervention:** `KEEP`
+
+**Should detect:** irony and frustration are voice.
+
+**Forbidden:** rewriting into sincere praise or neutral documentation.
+
+## 25. Mixed Markdown and code
+
+**Input:** «### نصب\nاول `pip install foo` را اجرا کن. بعد مقدار `FOO_TOKEN` را در `.env` بگذار.»
+
+**Expected intervention:** `KEEP`
+
+**Should detect:** structure and technical tokens are protected.
+
+**Forbidden:** changing heading level, code, variable name, file name, or step order.
