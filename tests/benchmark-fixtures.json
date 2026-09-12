@@ -1,0 +1,149 @@
+[
+  {
+    "id": "already-good-01",
+    "input": "نسخه جدید امروز منتشر شد. زمان بارگذاری صفحه اصلی کمتر شده و تنظیمات قبلی هم باقی مانده است.",
+    "genre": "product documentation",
+    "register": "semi-formal",
+    "audience": "existing users",
+    "expected_intervention": "KEEP",
+    "known_diagnoses": [],
+    "protected_spans": [],
+    "semantic_invariants": [
+      "new version released today",
+      "homepage load time decreased",
+      "previous settings remain"
+    ],
+    "voice_fingerprints": [
+      "concise semi-formal register"
+    ],
+    "forbidden_transformations": [
+      "add introduction",
+      "add conclusion",
+      "invent metric"
+    ]
+  },
+  {
+    "id": "technical-01",
+    "input": "برای deploy سرویس، مقدار `DATABASE_URL` را تنظیم کن و `npm run build` را اجرا کن.",
+    "genre": "technical documentation",
+    "register": "semi-formal technical",
+    "audience": "developer",
+    "expected_intervention": "KEEP",
+    "known_diagnoses": [],
+    "protected_spans": [
+      "deploy",
+      "`DATABASE_URL`",
+      "`npm run build`"
+    ],
+    "semantic_invariants": [
+      "set DATABASE_URL before running build command"
+    ],
+    "voice_fingerprints": [
+      "Persian-English technical code-switching"
+    ],
+    "forbidden_transformations": [
+      "translate identifier",
+      "change command",
+      "change order"
+    ]
+  },
+  {
+    "id": "translationese-01",
+    "input": "این قابلیت یک نقش مهم در تجربه کاربری بازی می‌کند و به کاربران اجازه می‌دهد که آن‌ها فایل را آپلود کنند.",
+    "genre": "product documentation",
+    "register": "semi-formal",
+    "audience": "product users",
+    "expected_intervention": "REWRITE",
+    "known_diagnoses": [
+      "literal predicate calque",
+      "unnecessary overt pronoun"
+    ],
+    "protected_spans": [],
+    "semantic_invariants": [
+      "feature is important to user experience",
+      "users can upload a file"
+    ],
+    "voice_fingerprints": [],
+    "forbidden_transformations": [
+      "add file type",
+      "add speed claim",
+      "invent user role"
+    ]
+  },
+  {
+    "id": "academic-hedge-01",
+    "input": "این یافته‌ها ممکن است نشان دهد که X با Y مرتبط است، اما برای نتیجه‌گیری علّی داده کافی نداریم [4].",
+    "genre": "academic",
+    "register": "formal academic",
+    "audience": "researcher",
+    "expected_intervention": "KEEP",
+    "known_diagnoses": [],
+    "protected_spans": [
+      "X",
+      "Y",
+      "[4]"
+    ],
+    "semantic_invariants": [
+      "association is possible not certain",
+      "causality is not established"
+    ],
+    "voice_fingerprints": [
+      "calibrated hedging"
+    ],
+    "forbidden_transformations": [
+      "remove hedge",
+      "claim causality",
+      "change citation"
+    ]
+  },
+  {
+    "id": "legal-01",
+    "input": "مستأجر موظف می‌باشد مبلغ اجاره را تا روز پنجم هر ماه پرداخت نماید.",
+    "genre": "legal",
+    "register": "formal legal",
+    "audience": "contract parties",
+    "expected_intervention": "FLAG",
+    "known_diagnoses": [
+      "formal padding may be genre-licensed"
+    ],
+    "protected_spans": [
+      "روز پنجم"
+    ],
+    "semantic_invariants": [
+      "tenant has payment obligation",
+      "deadline is fifth day of each month"
+    ],
+    "voice_fingerprints": [
+      "legal formality"
+    ],
+    "forbidden_transformations": [
+      "weaken obligation",
+      "change deadline",
+      "change actor"
+    ]
+  },
+  {
+    "id": "marketing-01",
+    "input": "این راهکار جامع و قدرتمند تحولی بزرگ در کسب‌وکار شما ایجاد می‌کند.",
+    "genre": "marketing",
+    "register": "promotional",
+    "audience": "prospective customer",
+    "expected_intervention": "REWRITE",
+    "known_diagnoses": [
+      "unsupported marketing filler"
+    ],
+    "protected_spans": [],
+    "semantic_invariants": [
+      "source makes a positive marketing claim but supplies no evidence"
+    ],
+    "voice_fingerprints": [
+      "persuasive intent"
+    ],
+    "forbidden_transformations": [
+      "invent metric",
+      "invent feature",
+      "invent testimonial",
+      "guarantee result"
+    ]
+  }
+]

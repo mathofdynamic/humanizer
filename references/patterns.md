@@ -1,133 +1,243 @@
 # Persian Writing Pattern Catalog
 
-These are editing signals, not proof of AI authorship. Flag clusters, repetition, and context mismatch rather than isolated words. A phrase can be correct in an administrative letter, an academic paper, a quotation, or a deliberately rhetorical passage.
+These are editing diagnostics, not proof of AI authorship. Diagnose clusters, repetition, discourse mismatch, and genre mismatch. Never treat the presence of one phrase as sufficient reason to rewrite.
 
-The right correction is the smallest one that makes this text clearer and more natural. Do not replace every flagged phrase automatically.
+Each entry uses the same operational fields:
 
-## 1. Artificially formal and bureaucratic Persian
+- **Cues:** what to notice
+- **Cluster signal:** what makes the diagnosis stronger
+- **False positives / genre license:** when the pattern may be legitimate
+- **Correction:** smallest useful repair
+- **Forbidden transformation / semantic risk:** what the edit must not change
 
-Review these when they add ceremony without adding precision:
+## 1. Throat-clearing introduction
 
-- `می‌باشد`, `می‌نماید`, `گردید`, `می‌گردد`
-- `بدین منظور`, `در خصوص`, `در راستای`, `در این راستا`
-- `شایان ذکر است`, `لازم به ذکر است`
-- `با توجه به موارد فوق`, `در نهایت می‌توان گفت`
-- `به استحضار می‌رساند`, `نسبت به انجام`, `اقدام به ... نمودن`, `مورد بررسی قرار دادن`
-- `در دنیای امروز`, `در عصر حاضر` when they only delay the point
+**Cues:** `در دنیای امروز`, `در عصر حاضر`, generic statements about importance, or `در این مقاله قصد داریم...` before any content-bearing claim.
 
-Possible directions, chosen by context:
+**Cluster signal:** two or more generic framing sentences plus a roadmap sentence, with no concrete actor, event, scope, or thesis.
 
-| Signal | Consider |
-| --- | --- |
-| `می‌باشد` as an inflated copula | `است` or a direct predicate |
-| `می‌نماید` as a padded verb | A normal direct verb such as `می‌کند` or `نشان می‌دهد` |
-| `گردید` / `می‌گردد` as administrative padding | `شد` / `می‌شود`, or a more specific verb |
-| `در خصوص` | `درباره` when the register allows it |
-| `در راستای` / `بدین منظور` | State the actual purpose or action |
-| `شایان ذکر است` / `لازم به ذکر است` | Delete it and start with the fact |
-| `با توجه به موارد فوق` | State the actual inference, or stop if it is obvious |
-| `در نهایت می‌توان گفت` | State the conclusion directly, if a conclusion is needed |
+**False positives / genre license:** speeches, historical framing, long reports, academic introductions, or articles where the scope statement itself is useful.
 
-Do not ban formal language. A legal notice, government form, or ceremonial letter may need a different register. The question is whether the form serves that genre or merely inflates an ordinary sentence.
+**Correction:** start at the first useful claim or keep only the background needed to interpret it.
 
-## 2. Translationese and English-shaped syntax
+**Forbidden transformation / semantic risk:** do not invent a stronger thesis, fact, trend, example, or statistic.
 
-Look beyond individual vocabulary. Common signals include:
+## 2. Decorative conclusion or micro-summary
 
-- English-like word order or rhetorical progression that feels translated rather than written in Persian.
-- Explicit pronouns (`او`, `آن‌ها`, `این موضوع`) where Persian verb agreement or context already supplies the subject.
-- Repetition of the subject at the start of nearby sentences.
-- Passive constructions that hide a known actor: name the actor when responsibility matters; keep passive voice when the actor is unknown or irrelevant.
-- Dense noun stacks and literal nominalizations where a Persian verb would be clearer.
-- Literal translations of English transitions or sentence frames.
-- Repeated `این موضوع`, `این امر`, and `این مسئله` used only as paragraph glue.
-- Repeated `با ارائه ...، موجب ... می‌شود` and similar participial frames that avoid a direct sentence.
+**Cues:** `در نهایت می‌توان گفت`, `به طور کلی می‌توان گفت`, or a final sentence that merely repeats the previous claim.
 
-Rewrite the sentence according to Persian information flow. Do not perform a word-for-word synonym swap, and do not invent an actor or a concrete result that the source does not provide.
+**Cluster signal:** repeated claim → explanation → restated claim units across several paragraphs.
 
-## 3. Generic LLM transitions
+**False positives / genre license:** academic conclusions, executive summaries, teaching material, or branded taglines that add genuine synthesis or navigation.
 
-These connectors are valid Persian:
+**Correction:** remove the redundant closure or replace it with an actual supported consequence.
 
-- `علاوه بر این`
-- `همچنین`
-- `از سوی دیگر`
-- `در واقع`
-- `به طور کلی`
-- `به عبارت دیگر`
-- `بنابراین`
-- `در نتیجه`
-- `با این حال`
+**Forbidden transformation / semantic risk:** do not fabricate an implication or broaden the claim beyond the source.
 
-Flag them when several paragraphs open with one, multiple connectors appear in a short passage, or the connector announces a relation that the sentences do not actually have. Remove unnecessary signposting or replace it with a content-bearing bridge. Do not delete a connector just to make the text less regular.
+## 3. Mechanical discourse-marker density
 
-## 4. Formulaic structure and rhythm
+**Cues:** nearby sentences or paragraphs repeatedly start with `همچنین`, `علاوه بر این`, `از سوی دیگر`, `در واقع`, `بنابراین`, `در نتیجه`, `با این حال`.
 
-Inspect the whole passage for:
+**Cluster signal:** repeated paragraph-initial placement, connector stacking, or a marker whose logical relation does not match the sentence.
 
-- Paragraphs with nearly identical length and internal shape.
-- Repeated `claim → explanation → conclusion` units.
-- A compulsory introduction, followed by exactly three benefits, followed by a summary.
-- Repeated three-item adjective or benefit groups when two items or a sentence would be more accurate.
-- Numbered lists used for prose that has no sequential steps.
-- A heading for every short paragraph.
-- A conclusion that merely repeats the preceding claims.
-- A micro-summary at the end of every section.
-- Predictable openings that delay the actual point.
+**False positives / genre license:** academic, legal, or analytic argument where explicit relations prevent ambiguity.
 
-Let the information determine paragraph length and structure. Convert bullets to prose only when prose is clearer; keep lists for genuinely parallel steps, requirements, options, features, or constraints.
+**Correction:** keep the marker that performs real work; otherwise use direct content, reference continuity, or simple adjacency.
 
-## 5. Corporate filler and unsupported praise
+**Forbidden transformation / semantic risk:** do not remove a causal or contrastive marker when doing so changes how propositions relate.
 
-Review dense or unsupported uses of:
+## 4. Demonstrative-shell glue
 
-- `تجربه‌ای بی‌نظیر`
-- `راهکاری جامع`
-- `تحولی بزرگ`
-- `انقلابی`
-- `قدرتمند`
-- `نوآورانه`
-- `پیشرفته`
-- `منحصربه‌فرد`
-- `در سطحی جدید`
-- `مهم`, `کارآمد`, `هوشمند`, `یکپارچه`, `بهینه`, `قابل توجه`, `تأثیرگذار`
+**Cues:** repeated `این موضوع`, `این امر`, `این مسئله` used after nearly every proposition.
 
-Ask what the product, method, or event actually does, for whom, and under what condition. Replace praise with an observable property only when that property is present in the source. Otherwise delete the adjective or make the claim appropriately modest.
+**Cluster signal:** the shell noun can be deleted without losing referential clarity, or its antecedent is vague.
 
-## 6. Natural Persian rhythm and presentation
+**False positives / genre license:** when the text genuinely categorizes something as an issue, matter, problem, question, or topic.
 
-Review whether:
+**Correction:** use zero reference, a clear pronoun, or name the actual antecedent.
 
-- Sentence lengths and clause counts vary because the ideas vary, not because of random rewriting.
-- Verb placement and clause order sound native rather than translated.
-- Paragraphs carry one useful local idea without a forced closing sentence.
-- Punctuation clarifies syntax instead of decorating it.
-- `،`, `؛`, `؟`, and `« »` fit the register; parentheses, quotation marks, and ellipses are not overused.
-- Persian `ی` and `ک` are used consistently where normalization is requested.
-- نیم‌فاصله is reasonable in forms such as `می‌شود`, `نمی‌توان`, and `آن‌ها` without correcting intentional colloquial usage into a different voice.
-- Markdown headings, emphasis, and bullets serve the publication context.
+**Forbidden transformation / semantic risk:** do not create ambiguous reference after topic shifts.
 
-Do not use inconsistent نیم‌فاصله, random punctuation, suspicious Unicode, or artificial roughness as a style technique.
+## 5. Bureaucratic padding
 
-## 7. Conversation and support patterns
+**Cues:** dense uses of `می‌باشد`, `می‌نماید`, `گردید`, `می‌گردد`, `در خصوص`, `در راستای`, `بدین منظور`, `نسبت به انجام`, `اقدام به ... نمودن`, `مورد بررسی قرار دادن`.
 
-In replies, flag:
+**Cluster signal:** multiple padded constructions in ordinary product, support, social, or explanatory prose where direct verbs would preserve the same function.
 
-- Repeating the user's request before answering.
-- A long preamble before the useful message.
-- Ceremony such as `حتماً! با کمال میل` when it adds nothing.
-- `امیدوارم این توضیحات برای شما مفید باشد` or `اگر سؤال دیگری داشتید` when no follow-up is needed.
-- A formal institutional register mixed with casual particles.
+**False positives / genre license:** legal, government, administrative, ceremonial, historical, or fixed institutional wording.
 
-For customer support, prefer the context-appropriate combination of acknowledgement, answer, status, and next action. Do not remove necessary politeness or turn a formal support channel into chat slang.
+**Correction:** use a direct predicate or state the actual purpose/action.
 
-## 8. Integrity boundary
+**Forbidden transformation / semantic risk:** do not weaken legal/procedural force or convert a required institutional register into casual Persian.
 
-Never treat these as acceptable edits:
+## 6. Institutional ceremony in the wrong channel
 
-- Deliberate typos, false uncertainty, fake slang, or grammatical mistakes.
-- Hidden or zero-width characters, homoglyphs, spacing attacks, or other adversarial Unicode changes.
-- Fabricated anecdotes, sources, citations, quotations, statistics, dates, or customer reactions.
-- Claims that the text is undetectable, guaranteed human, or optimized for a detector score.
+**Cues:** `بدین‌وسیله`, `به استحضار می‌رساند`, `شایان ذکر است`, `لازم به ذکر است` in an app notice, ordinary support reply, social post, or internal chat.
 
-Quoted, attributed, cited, coded, tabular, and factual material is protected content. Flag an issue inside it if useful, but leave it unchanged unless the user explicitly authorizes an edit.
+**Cluster signal:** ceremony outweighs the actual status, answer, or next action.
+
+**False positives / genre license:** formal letters, official notices, ceremonial correspondence.
+
+**Correction:** state the fact, status, or action directly while preserving appropriate politeness.
+
+**Forbidden transformation / semantic risk:** do not make support curt or remove required etiquette.
+
+## 7. Translationese syntax
+
+**Cues:** unnecessary overt subjects, English-shaped clause order, literal predicates, repeated full noun subjects, heavy noun chains, literal connective frames.
+
+**Cluster signal:** several structural cues appear together and the sentence is grammatical but reads as translated.
+
+**False positives / genre license:** established technical calques, quotations, intentionally translated terminology.
+
+**Correction:** rewrite the construction according to Persian information flow; omit recoverable subjects; use a natural predicate; prefer a direct verb where genre permits.
+
+**Forbidden transformation / semantic risk:** do not invent an actor, causal relation, result, or technical meaning.
+
+Read [translationese](translationese.md) for detailed cases.
+
+## 8. Compulsive triads and false symmetry
+
+**Cues:** exactly three benefits, three adjectives, or three sections despite unequal or unsupported content.
+
+**Cluster signal:** repeated three-item structures plus uniform paragraph shape or a vague third item.
+
+**False positives / genre license:** intentional rhetoric, established slogans, real three-step procedures, genuinely parallel requirements.
+
+**Correction:** let the number and weight of items follow the information.
+
+**Forbidden transformation / semantic risk:** do not destroy real parallel structure merely because it contains three items.
+
+## 9. Heading or bullet inflation
+
+**Cues:** a heading for every short paragraph, or long bullets that are merely consecutive prose sentences.
+
+**Cluster signal:** headings restate the paragraph instead of aiding navigation; bullets are not truly parallel or scannable.
+
+**False positives / genre license:** documentation, help centers, requirements, procedures, options, feature matrices.
+
+**Correction:** merge into prose or fewer sections only when continuity improves.
+
+**Forbidden transformation / semantic risk:** do not damage scanability, step order, requirements, or information architecture.
+
+## 10. Unsupported marketing filler
+
+**Cues:** `جامع`, `قدرتمند`, `نوآورانه`, `منحصربه‌فرد`, `بی‌نظیر`, `تحولی بزرگ`, `در سطحی جدید` without a concrete basis in the source.
+
+**Cluster signal:** several evaluative adjectives with no mechanism, audience, condition, proof, or observable property.
+
+**False positives / genre license:** deliberate brand voice, slogans, campaigns, or explicitly hyperbolic copy.
+
+**Correction:** use a source-supported capability or benefit; otherwise remove or soften the adjective.
+
+**Forbidden transformation / semantic risk:** never manufacture a metric, proof point, customer reaction, market position, or guaranteed result.
+
+## 11. Pseudo-profundity and abstraction cascade
+
+**Cues:** generic metaphors such as `پلی به سوی آینده`, or abstract chains like `بهبود تجربه، افزایش بهره‌وری و ارتقای کیفیت` without mechanism.
+
+**Cluster signal:** the sentence could describe many unrelated products or topics with no meaningful change.
+
+**False positives / genre license:** opinion writing, creative brand language, intentional metaphor.
+
+**Correction:** recover the supported actor/action/outcome or keep the metaphor only when it is actually part of the writer's voice.
+
+**Forbidden transformation / semantic risk:** do not invent a mechanism just to make the claim concrete.
+
+## 12. Over-explaining and excessive completeness
+
+**Cues:** a simple instruction or answer grows into definitions, obvious consequences, history, benefits, risks, and summary not required by the task.
+
+**Cluster signal:** later sentences add no constraint, state, failure mode, or decision-relevant information.
+
+**False positives / genre license:** beginner teaching, compliance material, comprehensive reports, safety-critical documentation.
+
+**Correction:** retain only the explanation needed by this audience and task.
+
+**Forbidden transformation / semantic risk:** do not remove prerequisites, safety warnings, legal disclosures, or novice-critical context.
+
+## 13. Fake precision
+
+**Cues:** added numbers, percentages, dates, benchmarks, timeframes, certainty words, named mechanisms, or causal links not present in the source.
+
+**Cluster signal:** the rewrite is more specific than the input without evidence.
+
+**False positives / genre license:** none when the information was introduced by the editor rather than supplied by the source.
+
+**Correction:** restore the original level of specificity and uncertainty.
+
+**Forbidden transformation / semantic risk:** this is a hard failure. Do not retain invented precision because it sounds more persuasive.
+
+## 14. Uniform sentence or paragraph templates
+
+**Cues:** repeated syntactic frames, identical paragraph lengths, or repeated claim → explanation → conclusion structures.
+
+**Cluster signal:** uniformity aligns with a template rather than genuinely parallel ideas.
+
+**False positives / genre license:** comparison tables, procedures, repeated legal clauses, deliberate rhetoric, teaching exercises.
+
+**Correction:** restructure only where the ideas perform different communicative work.
+
+**Forbidden transformation / semantic risk:** never split, merge, or vary sentence length solely to create "burstiness."
+
+## 15. Support-script ceremony
+
+**Cues:** long acknowledgements, repeating the user's request, `حتماً با کمال میل`, empty closings, or vague promises such as `در اسرع وقت`.
+
+**Cluster signal:** social ritual is longer than the answer/status/next action.
+
+**False positives / genre license:** channels where hospitality, formality, or an open invitation is expected.
+
+**Correction:** prefer acknowledgement → answer/status → next action, with the minimum politeness needed for the relationship.
+
+**Forbidden transformation / semantic risk:** do not invent resolution time, guarantees, escalation, or commitments.
+
+## 16. Academic significance inflation
+
+**Cues:** `به‌وضوح نشان می‌دهد`, `تحولی قابل توجه`, `نقش کلیدی`, broad future or external-validity claims unsupported by the cited result.
+
+**Cluster signal:** evaluative wording is stronger than the evidence or removes hedging.
+
+**False positives / genre license:** claims directly supported by the study design, data, and cited evidence.
+
+**Correction:** preserve measured uncertainty and scope the claim to the reported conditions.
+
+**Forbidden transformation / semantic risk:** do not change citation scope, confidence, limitations, or causal status.
+
+## 17. Artificial balance or neutrality
+
+**Cues:** automatic `مزایا و چالش‌ها`, `از یک سو / از سوی دیگر`, or a generic counterpoint added to make an argument look balanced.
+
+**Cluster signal:** the counterpoint has no evidence or relevance to the source's actual purpose.
+
+**False positives / genre license:** analysis where competing evidence genuinely exists.
+
+**Correction:** preserve the writer's supported position and real limitations.
+
+**Forbidden transformation / semantic risk:** do not remove genuine counterevidence or turn cautious analysis into advocacy.
+
+## 18. Over-polished, personality-free prose
+
+**Cues:** contractions, bluntness, humor, recurring vocabulary, emphasis, code-switching, and writer-specific rhythm disappear even though they were not defects.
+
+**Cluster signal:** the rewrite is grammatically smooth but sounds like a generic corporate or essay voice.
+
+**False positives / genre license:** user explicitly requested a new brand voice, formalization, standardization, or ghostwriting.
+
+**Correction:** restore voice fingerprints and keep already-effective wording.
+
+**Forbidden transformation / semantic risk:** do not replace the writer's stance, politeness, hedging, emotional intensity, dialect, or first-person habits without instruction.
+
+## Integrity boundary
+
+Never treat these as legitimate humanization techniques:
+
+- detector optimization;
+- deliberate typos or grammar errors;
+- hidden/invisible Unicode or homoglyphs;
+- random punctuation or spacing attacks;
+- arbitrary synonym rotation;
+- random sentence-length variation;
+- fabricated anecdotes, sources, metrics, reactions, opinions, uncertainty, or experiences.
+
+The target is better Persian, not a lower detector score.

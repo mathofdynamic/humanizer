@@ -1,30 +1,34 @@
 # Humanizer
 
-Humanizer is a Persian-first Agent Skill for refining writing that feels translated, repetitive, bureaucratic, generic, overly formal, or mechanically structured. It rewrites only as much as needed to make the Persian natural for its context while preserving meaning, facts, terminology, and the writer's voice.
+Humanizer is a Persian-first Agent Skill for refining writing that feels translated, repetitive, bureaucratic, generic, overly formal, mechanically structured, or mismatched to its actual genre.
+
+Version 2 behaves like a careful native Persian editor: it diagnoses first, preserves semantic and voice invariants, and makes the smallest justified edit. Returning already-natural text unchanged is a valid success state.
 
 It is a writing-quality tool. It does not detect authorship, promise that text is "undetectable" or "100% human," optimize detector scores, or use adversarial text tricks.
 
-## What it improves
+## What v2 improves
 
-- Persian syntax and information flow rather than word-for-word English-shaped phrasing
-- Artificial formality, bureaucratic padding, generic transitions, and empty marketing language
-- Repetitive paragraph structure, bullet inflation, unnecessary headings, and decorative conclusions
-- Register fit across conversational, semi-formal, formal, academic, news, marketing, technical, support, social, and blog writing
-- Persian punctuation, spacing, نیم‌فاصله, and consistent use of Persian `ی` and `ک`
+- native Persian information flow rather than word-for-word English-shaped syntax
+- explicit `KEEP / MINOR / REWRITE / FLAG` intervention decisions
+- stronger semantic-drift protection for uncertainty, causality, scope, capability, and obligation
+- writer-voice preservation instead of generic "polishing"
+- genre-aware handling across conversation, business, news, academic, technical, marketing, support, administrative, and other Persian
+- structured detection of bureaucratic padding, translationese, repetitive transitions, false symmetry, over-explanation, fake precision, and generic marketing filler
+- Persian punctuation, spacing, نیم‌فاصله, and character normalization as a final pass rather than a rewriting strategy
 
-Humanizer does not fact-check the source. It preserves factual claims and flags uncertainty rather than inventing corrections.
+Humanizer does not fact-check the source. It preserves source claims and flags ambiguity instead of inventing corrections.
 
 ## Modes
 
-- `rewrite` (default): return an improved Persian version.
-- `audit`: identify writing-quality problems without rewriting.
+- `rewrite` (default): run the full workflow and edit only justified defects. It may return the input unchanged.
+- `audit`: diagnose material writing-quality problems without rewriting.
 - `edit`: make minimal targeted edits to a named file and verify the result.
 
-You can also specify the target register, audience, terminology to preserve, or desired degree of intervention in ordinary language.
+You can specify target register, audience, terminology, or intervention level in ordinary language.
 
 ## Install
 
-### OpenAI Codex and other Agent Skills clients
+### OpenAI Codex and Agent Skills clients
 
 Project-local:
 
@@ -38,42 +42,27 @@ User-wide:
 git clone https://github.com/mathofdynamic/humanizer ~/.agents/skills/humanizer
 ```
 
-Create the parent directory first if it does not exist. On Windows PowerShell, for example:
-
-```powershell
-New-Item -ItemType Directory -Force .agents/skills | Out-Null
-git clone https://github.com/mathofdynamic/humanizer .agents/skills/humanizer
-```
-
 ### Claude Code
-
-For Claude Code setups that load Agent Skills from `~/.claude/skills/`:
 
 ```bash
 git clone https://github.com/mathofdynamic/humanizer ~/.claude/skills/humanizer
 ```
 
-### Generic Agent Skills installation
-
-Copy or clone the `humanizer/` directory into the client's Agent Skills directory. Keep `SKILL.md` at the skill root and preserve the relative `references/` paths. `agents/openai.yaml` is optional client metadata and is safe for clients that do not use it.
+Keep `SKILL.md` at the skill root and preserve the relative `references/` paths.
 
 ## Usage
 
-Ask the agent in natural language. For example:
-
 ```text
-«این متن فارسی را طبیعی‌تر کن، اما لحن رسمی و اصطلاحات فنی‌اش حفظ شود.»
+«این متن فارسی را طبیعی‌تر کن، اما لحن رسمی، میزان قطعیت و اصطلاحات فنی‌اش را حفظ کن.»
 ```
 
 ```text
-«این متن را audit کن. عبارت‌های bureaucratic، ترجمه‌وار و انتقال‌های تکراری را مشخص کن، اما بازنویسی نکن.»
+«این متن را audit کن. فقط مشکلاتی را بگو که واقعاً در این بافت نیاز به اصلاح دارند.»
 ```
 
 ```text
-«فایل draft.md را edit کن؛ فقط جمله‌های مصنوعی را هدف بگیر و نقل‌قول‌ها، لینک‌ها و جدول‌ها را تغییر نده.»
+«فایل draft.md را edit کن؛ فقط بخش‌های ترجمه‌وار را اصلاح کن و نقل‌قول‌ها، لینک‌ها، اعداد و اصطلاحات فنی را دست نزن.»
 ```
-
-If no mode is named, Humanizer uses `rewrite`. A rewrite runs one editing pass and one bounded editorial pass for fidelity, rhythm, register, and Persian orthography.
 
 ## Repository structure
 
@@ -87,27 +76,49 @@ humanizer/
 ├── references/
 │   ├── patterns.md
 │   ├── persian-style.md
-│   └── quality-check.md
+│   ├── quality-check.md
+│   ├── translationese.md
+│   ├── genre-matrix.md
+│   ├── voice-and-intervention.md
+│   └── evaluation.md
 └── tests/
     ├── examples.md
+    ├── edge-cases.md
+    ├── benchmark-fixtures.json
     └── validate_repository.py
 ```
 
-Run the dependency-free repository checks with:
+Run dependency-free repository checks with:
 
 ```bash
 python tests/validate_repository.py
 ```
 
+## Evaluation philosophy
+
+Do not score Humanizer with an AI detector.
+
+The benchmark should combine:
+
+- blind pairwise preference for natural Persian in the exact genre;
+- hard semantic/protected-span gates;
+- ratings for register, voice, fluency, mechanics, structure, and unnecessary intervention;
+- explicit no-regression cases where the best edit is `KEEP`.
+
+See [references/evaluation.md](references/evaluation.md).
+
 ## Limitations
 
-- Naturalness is contextual. Good results still benefit from a stated audience and target register.
+- Naturalness is contextual and genre-specific.
 - The skill improves wording; it does not verify facts, citations, legal correctness, or subject-matter accuracy.
-- Quotations, code, tables, and attributed material are protected by default and may be reported without being rewritten.
-- Persian dialect, colloquial spelling, and terminology choices can be intentional; Humanizer favors preservation over blanket normalization.
+- Quotations, code, data, identifiers, and fixed terminology are protected by default.
+- Legal, highly technical, poetic, historical, and dialect-heavy material may require `FLAG` or very limited intervention.
+- Persian-specific evidence does not justify universal "human" sentence-length, connector-frequency, or lexical-diversity targets.
 
 ## Attribution and license
 
 Humanizer is released under the [MIT License](LICENSE).
 
-Its pattern-auditing approach was informed by [Conor Bronsdon's `avoid-ai-writing`](https://github.com/conorbronsdon/avoid-ai-writing), which is MIT-licensed. Persian-specific rules and wording were developed independently. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for attribution and research references, including the [Agent Skills specification](https://agentskills.io/specification).
+Its pattern-auditing approach was informed by [Conor Bronsdon's `avoid-ai-writing`](https://github.com/conorbronsdon/avoid-ai-writing), which is MIT-licensed. Persian-specific rules and wording were developed independently.
+
+See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for attribution and research references, including the [Agent Skills specification](https://agentskills.io/specification).

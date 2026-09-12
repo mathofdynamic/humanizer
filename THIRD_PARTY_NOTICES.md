@@ -11,7 +11,7 @@ Humanizer was informed by the structure and pattern-auditing approach of:
 
 The upstream MIT license permits use, modification, and redistribution. Humanizer is a Persian-first implementation with its own rules, structure, wording, and safety boundary.
 
-No source code or substantial prose from the upstream project is reproduced here. This notice preserves the upstream project and author attribution required for any redistributed MIT-licensed material.
+No source code or substantial prose from the upstream project is reproduced here.
 
 Upstream copyright notice:
 
@@ -19,12 +19,27 @@ Upstream copyright notice:
 
 ## Wikipedia: Signs of AI writing
 
-The project also uses the Wikipedia advice page `Wikipedia:Signs of AI writing` as a descriptive research reference for recurring LLM writing conventions. Humanizer does not reproduce that page as a rulebook and does not treat any listed signal as proof of authorship.
+`Wikipedia:Signs of AI writing` is used only as a descriptive research reference for recurring LLM writing conventions. Humanizer does not treat those conventions as proof of authorship.
 
 Reference:
 https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing
 
 ## Agent Skills specification
 
-Package structure follows the Agent Skills specification:
+Package structure follows:
 https://agentskills.io/specification
+
+## Persian linguistic and editorial research
+
+Humanizer v2 also draws on research areas identified during the September 2026 Persian-humanization review:
+
+- Persian information structure, topic/focus, subject omission, reference, and word-order flexibility
+- Persian discourse-marker function
+- original-vs-translated Persian and translationese research
+- Persian orthography and ZWNJ/spacing guidance
+- Persian corpora spanning news, academic, conversational, technical, and web genres
+- professional copy/stylistic editing guidance on minimal intervention and preservation of writer voice
+
+These sources support context-sensitive editing principles, not authorship detection or universal frequency thresholds.
+
+The project intentionally does **not** encode detector scores, perplexity targets, "burstiness" targets, synonym randomization, deliberate errors, or fixed sentence-length distributions as quality metrics.

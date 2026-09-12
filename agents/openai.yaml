@@ -1,7 +1,7 @@
 interface:
   display_name: "Humanizer — Persian Writing"
-  short_description: "Natural Persian editing with voice preserved"
-  default_prompt: "Use $humanizer to rewrite this Persian text naturally while preserving its meaning and register."
+  short_description: "Native Persian editing with meaning and voice preserved"
+  default_prompt: "Use $humanizer to improve this Persian text only where justified; preserve meaning, register, uncertainty, terminology, and writer voice."
 
 policy:
   allow_implicit_invocation: true
