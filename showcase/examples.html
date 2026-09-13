@@ -1,0 +1,1012 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>نمونه‌های پیش و پس از ویرایش</title>
+    <style>
+      :root {
+        --ink: #142431;
+        --muted: #69706f;
+        --paper: #f5f1e8;
+        --rust: #bd6b52;
+        --rust-soft: #f5e4dc;
+        --sage: #66866b;
+        --sage-soft: #e5eee2;
+        --amber: #b2863c;
+        --amber-soft: #f3e8c9;
+        --neutral: #637b8a;
+        --line: rgba(20, 36, 49, 0.16);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+      }
+
+      body {
+        overflow: hidden;
+        background: #d7d1c5;
+        color: var(--ink);
+        font-family: "Vazirmatn", "IRANSansX", Tahoma, sans-serif;
+      }
+
+      .canvas {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        isolation: isolate;
+        background:
+          radial-gradient(circle at 91% 4%, rgba(190, 210, 184, 0.5), transparent 26%),
+          radial-gradient(circle at 8% 92%, rgba(226, 183, 161, 0.38), transparent 28%),
+          var(--paper);
+      }
+
+      .canvas::before {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background-image:
+          linear-gradient(rgba(20, 36, 49, 0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(20, 36, 49, 0.035) 1px, transparent 1px);
+        background-size: 38px 38px;
+        content: "";
+        mask-image: linear-gradient(to bottom, black 0%, transparent 76%);
+      }
+
+      .canvas::after {
+        position: absolute;
+        inset: 26px;
+        z-index: -1;
+        border: 1px solid rgba(20, 36, 49, 0.22);
+        border-radius: 22px;
+        content: "";
+        pointer-events: none;
+      }
+
+      .orbit {
+        position: absolute;
+        width: 310px;
+        height: 310px;
+        right: -112px;
+        top: -132px;
+        border: 1px solid rgba(102, 134, 107, 0.32);
+        border-radius: 50%;
+      }
+
+      .orbit::after {
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        right: 76px;
+        bottom: -38px;
+        border: 1px solid rgba(102, 134, 107, 0.22);
+        border-radius: 50%;
+        content: "";
+      }
+
+      .frame {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        padding: 64px 78px 52px;
+      }
+
+      .hero {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 48px;
+      }
+
+      .hero-copy {
+        max-width: 1050px;
+      }
+
+      .eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        color: var(--sage);
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+
+      .eyebrow .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--rust);
+      }
+
+      h1,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        margin-top: 16px;
+        font-family: "B Titr", "Vazirmatn", Tahoma, sans-serif;
+        font-size: clamp(40px, 3.9vw, 64px);
+        font-weight: 800;
+        letter-spacing: -0.065em;
+        line-height: 1.22;
+      }
+
+      .dek {
+        margin-top: 12px;
+        color: var(--muted);
+        font-size: 20px;
+        font-weight: 500;
+      }
+
+      .stamp {
+        display: grid;
+        width: 86px;
+        height: 86px;
+        flex: 0 0 auto;
+        place-content: center;
+        border: 1px solid rgba(20, 36, 49, 0.28);
+        border-radius: 50%;
+        color: var(--ink);
+        text-align: center;
+        transform: rotate(-8deg);
+      }
+
+      .stamp strong {
+        font-size: 27px;
+        line-height: 1;
+      }
+
+      .stamp span {
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .rule {
+        width: 100%;
+        height: 1px;
+        margin-top: 30px;
+        background: var(--line);
+      }
+
+      .compare {
+        display: flex;
+        align-items: stretch;
+        justify-content: center;
+        gap: 26px;
+        min-height: 0;
+        flex: 1;
+        margin-top: 30px;
+        direction: rtl;
+      }
+
+      .panel {
+        position: relative;
+        display: flex;
+        min-width: 0;
+        flex: 1 1 0;
+        flex-direction: column;
+        overflow: hidden;
+        border: 1px solid;
+        border-radius: 24px;
+        box-shadow: 0 16px 34px rgba(29, 39, 39, 0.07);
+      }
+
+      .panel::before {
+        position: absolute;
+        inset: 0 0 auto;
+        height: 7px;
+        content: "";
+      }
+
+      .after {
+        border-color: rgba(102, 134, 107, 0.6);
+        background: linear-gradient(145deg, rgba(229, 238, 226, 0.96), rgba(250, 249, 243, 0.96) 56%);
+      }
+
+      .after::before {
+        background: var(--sage);
+      }
+
+      .before {
+        border-color: rgba(189, 107, 82, 0.62);
+        background: linear-gradient(145deg, rgba(245, 228, 220, 0.98), rgba(252, 248, 241, 0.98) 58%);
+      }
+
+      .before::before {
+        background: var(--rust);
+      }
+
+      .keep.before,
+      .keep.after {
+        border-color: rgba(99, 123, 138, 0.5);
+        background: linear-gradient(145deg, rgba(226, 234, 238, 0.85), rgba(250, 249, 243, 0.96) 58%);
+      }
+
+      .keep.before::before,
+      .keep.after::before {
+        background: var(--neutral);
+      }
+
+      .keep .panel-label::before {
+        background: var(--neutral);
+      }
+
+      .flag.after {
+        border-color: rgba(178, 134, 60, 0.62);
+        background: linear-gradient(145deg, rgba(246, 237, 211, 0.9), rgba(252, 249, 241, 0.98) 58%);
+      }
+
+      .flag.after::before,
+      .flag.before::before {
+        background: var(--amber);
+      }
+
+      .flag.before {
+        border-color: rgba(178, 134, 60, 0.62);
+        background: linear-gradient(145deg, rgba(246, 237, 211, 0.9), rgba(252, 249, 241, 0.98) 58%);
+      }
+
+      .flag .panel-label::before {
+        background: var(--amber);
+      }
+
+      .panel-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        padding: 26px 30px 0;
+      }
+
+      .panel-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 22px;
+        font-weight: 800;
+      }
+
+      .panel-label::before {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--rust);
+        content: "";
+      }
+
+      .after .panel-label::before {
+        background: var(--sage);
+      }
+
+      .panel-meta {
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .panel-body {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        padding: 22px 34px 12px;
+      }
+
+      .quote {
+        max-width: 650px;
+        color: var(--ink);
+        font-size: clamp(26px, 2.45vw, 39px);
+        font-weight: 750;
+        letter-spacing: -0.045em;
+        line-height: 1.68;
+        text-wrap: balance;
+      }
+
+      .before .quote {
+        color: #28333a;
+        font-weight: 650;
+      }
+
+      .mark {
+        display: inline;
+        padding: 0.04em 0.12em 0.08em;
+        border-radius: 0.18em;
+        -webkit-box-decoration-break: clone;
+        box-decoration-break: clone;
+      }
+
+      .mark::after {
+        display: inline-block;
+        margin-inline-start: 0.22em;
+        font-size: 0.38em;
+        font-weight: 900;
+        line-height: 1;
+        vertical-align: super;
+        content: attr(data-index);
+      }
+
+      .issue {
+        background: rgba(189, 107, 82, 0.18);
+        box-shadow: inset 0 -0.12em 0 rgba(189, 107, 82, 0.72);
+        color: #8f4838;
+      }
+
+      .fix {
+        background: rgba(102, 134, 107, 0.19);
+        box-shadow: inset 0 -0.12em 0 rgba(102, 134, 107, 0.76);
+        color: #355c3d;
+      }
+
+      .flag-mark {
+        background: rgba(178, 134, 60, 0.2);
+        box-shadow: inset 0 -0.12em 0 rgba(178, 134, 60, 0.78);
+        color: #7b5b21;
+      }
+
+      .panel-foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px 30px 25px;
+        border-top: 1px solid var(--line);
+      }
+
+      .status {
+        display: inline-flex;
+        align-items: center;
+        min-height: 34px;
+        padding: 7px 14px;
+        border: 1px solid;
+        border-radius: 999px;
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      .after .status {
+        border-color: rgba(102, 134, 107, 0.45);
+        background: rgba(229, 238, 226, 0.82);
+        color: #426448;
+      }
+
+      .before .status {
+        border-color: rgba(189, 107, 82, 0.42);
+        background: rgba(245, 228, 220, 0.72);
+        color: #9c4e3b;
+      }
+
+      .keep .status {
+        border-color: rgba(99, 123, 138, 0.42);
+        background: rgba(226, 234, 238, 0.82);
+        color: #4e6879;
+      }
+
+      .flag .status {
+        border-color: rgba(178, 134, 60, 0.46);
+        background: rgba(246, 237, 211, 0.86);
+        color: #7b5b21;
+      }
+
+      .foot-note {
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .bridge {
+        display: flex;
+        width: 74px;
+        flex: 0 0 74px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 13px;
+        color: var(--muted);
+      }
+
+      .bridge-line {
+        width: 1px;
+        flex: 1;
+        background: var(--line);
+      }
+
+      .bridge-core {
+        display: grid;
+        width: 54px;
+        height: 54px;
+        place-items: center;
+        border: 1px solid rgba(20, 36, 49, 0.25);
+        border-radius: 50%;
+        background: rgba(245, 241, 232, 0.76);
+        box-shadow: 0 8px 18px rgba(29, 39, 39, 0.08);
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .insight {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        margin-top: 26px;
+        padding: 0 4px;
+      }
+
+      .insight-title {
+        color: var(--ink);
+        font-size: 17px;
+        font-weight: 850;
+      }
+
+      .insight-items {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .insight-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        min-height: 36px;
+        padding: 7px 14px;
+        border: 1px solid rgba(20, 36, 49, 0.17);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.36);
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .insight-item::before {
+        width: 7px;
+        height: 7px;
+        flex: 0 0 auto;
+        border-radius: 50%;
+        background: var(--sage);
+        content: "";
+      }
+
+      .issue-key::before {
+        background: var(--rust);
+      }
+
+      .fix-key::before {
+        background: var(--sage);
+      }
+
+      .flag-key::before {
+        background: var(--amber);
+      }
+
+      @media (max-width: 980px) {
+        body {
+          overflow: auto;
+        }
+
+        .canvas {
+          min-height: 100vh;
+          height: auto;
+        }
+
+        .frame {
+          min-height: 100vh;
+          padding: 48px 28px 38px;
+        }
+
+        .hero {
+          gap: 24px;
+        }
+
+        .compare {
+          flex-direction: column;
+        }
+
+        .bridge {
+          width: 100%;
+          height: 44px;
+          flex-basis: 44px;
+          flex-direction: row;
+        }
+
+        .bridge-line {
+          width: auto;
+          height: 1px;
+        }
+
+        .insight,
+        .insight-items {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="canvas">
+      <span class="orbit" aria-hidden="true"></span>
+
+      <div class="frame">
+        <header class="hero">
+          <div class="hero-copy">
+            <div class="eyebrow">
+              <span>ویراستار فارسی</span>
+              <span class="dot" aria-hidden="true"></span>
+              <span id="caseGenre">پیام پشتیبانی</span>
+              <span class="dot" aria-hidden="true"></span>
+              <span id="caseIntervention">ویرایش جزئی</span>
+            </div>
+            <h1 id="caseTitle">یک وضعیت روشن، بدون لحن اداری</h1>
+            <p class="dek" id="caseDek">فعل‌های سنگین کوتاه شدند؛ معنا باقی ماند.</p>
+          </div>
+
+          <div class="stamp" aria-label="شماره‌ی نمونه">
+            <strong id="caseNumber">۰۱</strong>
+            <span>نمونه</span>
+          </div>
+        </header>
+
+        <div class="rule" aria-hidden="true"></div>
+
+        <section class="compare" aria-label="مقایسه‌ی متن قبل و بعد از ویرایش">
+          <article class="panel before" id="beforePanel">
+            <div class="panel-head">
+              <div>
+                <div class="panel-label">قبل</div>
+                <div class="panel-meta" id="beforeMeta">نسخه‌ی اولیه</div>
+              </div>
+              <div class="panel-meta" id="beforeSideMeta">نیازمند ویرایش</div>
+            </div>
+
+            <div class="panel-body">
+              <p class="quote" id="beforeText"></p>
+            </div>
+
+            <div class="panel-foot">
+              <span class="status" id="beforeStatus">ساختار اداری</span>
+              <span class="foot-note" id="beforeNote">سه نشانه‌ی قابل‌اصلاح</span>
+            </div>
+          </article>
+
+          <div class="bridge" aria-hidden="true">
+            <span class="bridge-line"></span>
+            <span class="bridge-core">تبدیل</span>
+            <span class="bridge-line"></span>
+          </div>
+
+          <article class="panel after" id="afterPanel">
+            <div class="panel-head">
+              <div>
+                <div class="panel-label">بعد</div>
+                <div class="panel-meta" id="afterMeta">نسخه‌ی طبیعی</div>
+              </div>
+              <div class="panel-meta" id="afterSideMeta">ویرایش نهایی</div>
+            </div>
+
+            <div class="panel-body">
+              <p class="quote" id="afterText"></p>
+            </div>
+
+            <div class="panel-foot">
+              <span class="status" id="afterStatus">روان و طبیعی</span>
+              <span class="foot-note" id="afterNote">سه اصلاح کم‌دامنه</span>
+            </div>
+          </article>
+        </section>
+
+        <footer class="insight">
+          <div class="insight-title">رنگ‌ها چه چیزی را نشان می‌دهند؟</div>
+          <div class="insight-items">
+            <span class="insight-item issue-key">نشانه‌ی مسئله</span>
+            <span class="insight-item fix-key">اصلاح پیشنهادی</span>
+            <span class="insight-item flag-key">نیازمند بررسی</span>
+          </div>
+        </footer>
+      </div>
+    </main>
+
+    <script>
+      const cases = [
+        {
+          id: "۰۱",
+          genre: "پیام پشتیبانی",
+          intervention: "ویرایش جزئی",
+          kind: "minor",
+          title: "یک وضعیت روشن، بدون لحن اداری",
+          dek: "فعل‌های سنگین کوتاه شدند؛ معنا باقی ماند.",
+          beforeMeta: "نسخه‌ی اولیه",
+          beforeSideMeta: "نیازمند ویرایش",
+          beforeStatus: "ساختار اداری",
+          beforeNote: "سه نشانه‌ی قابل‌اصلاح",
+          afterMeta: "نسخه‌ی طبیعی",
+          afterSideMeta: "ویرایش نهایی",
+          afterStatus: "روان و طبیعی",
+          afterNote: "سه اصلاح کم‌دامنه",
+          beforeHtml: `این ابزار <span class="mark issue" data-index="۱">بدین‌وسیله به اطلاع می‌رساند</span> درخواست شما <span class="mark issue" data-index="۲">در دست بررسی می‌باشد</span> و نتیجه‌ی نهایی <span class="mark issue" data-index="۳">متعاقباً اعلام خواهد گردید</span>.`,
+          afterHtml: `<span class="mark fix" data-index="۱">درخواست شما</span> <span class="mark fix" data-index="۲">در حال بررسی است</span> و نتیجه‌ی نهایی <span class="mark fix" data-index="۳">بعداً اعلام می‌شود</span>.`
+        },
+        {
+          id: "۰۲",
+          genre: "مقدمه‌ی مقاله",
+          intervention: "بازنویسی",
+          kind: "rewrite",
+          title: "مقدمه‌ای که زودتر به اصل مطلب می‌رسد",
+          dek: "قاب‌سازی تشریفاتی حذف شد؛ موضوع جلو آمد.",
+          beforeMeta: "نسخه‌ی اولیه",
+          beforeSideMeta: "شروع کلی",
+          beforeStatus: "مقدمه‌ی قالبی",
+          beforeNote: "سه لایه‌ی پیش‌درآمد",
+          afterMeta: "نسخه‌ی طبیعی",
+          afterSideMeta: "شروع مستقیم",
+          afterStatus: "روان و متمرکز",
+          afterNote: "ادعاهای تازه اضافه نشد",
+          beforeHtml: `<span class="mark issue" data-index="۱">در دنیای امروز</span>، فناوری <span class="mark issue" data-index="۲">با سرعت بی‌سابقه‌ای در حال پیشرفت است</span> و <span class="mark issue" data-index="۳">اهمیت این موضوع بر کسی پوشیده نیست</span>. در این مقاله قصد داریم به بررسی نقش آن در زندگی روزمره بپردازیم.`,
+          afterHtml: `<span class="mark fix" data-index="۱">فناوری بخشی از زندگی روزمره است</span>. <span class="mark fix" data-index="۲">در این مقاله</span>، نقش آن را <span class="mark fix" data-index="۳">بررسی می‌کنیم</span>.`
+        },
+        {
+          id: "۰۳",
+          genre: "متن تبلیغاتی",
+          intervention: "بازنویسی",
+          kind: "rewrite",
+          title: "تبلیغی که به‌جای وعده، روشن حرف می‌زند",
+          dek: "صفت‌های بی‌پشتوانه کم شدند؛ دعوت باقی ماند.",
+          beforeMeta: "نسخه‌ی اولیه",
+          beforeSideMeta: "پُر از ستایش",
+          beforeStatus: "ادعای کلی",
+          beforeNote: "سه عبارت کم‌اطمینان",
+          afterMeta: "نسخه‌ی طبیعی",
+          afterSideMeta: "ادعای محدود",
+          afterStatus: "ساده و روشن",
+          afterNote: "نتیجه تضمین نشده است",
+          beforeHtml: `<span class="mark issue" data-index="۱">با استفاده از این راهکار جامع و قدرتمند</span>، <span class="mark issue" data-index="۲">تجربه‌ای بی‌نظیر و منحصربه‌فرد</span> را <span class="mark issue" data-index="۳">در سطحی جدید تجربه کنید</span>.`,
+          afterHtml: `<span class="mark fix" data-index="۱">با این راهکار</span>، <span class="mark fix" data-index="۲">کارها را</span> <span class="mark fix" data-index="۳">ساده‌تر انجام دهید</span>.`
+        },
+        {
+          id: "۰۴",
+          genre: "پاسخ پشتیبانی",
+          intervention: "ویرایش جزئی",
+          kind: "minor",
+          title: "همدلی بدون وعده‌ی اضافه",
+          dek: "لحن انسانی‌تر شد؛ زمان و نتیجه از خودمان ساخته نشد.",
+          beforeMeta: "نسخه‌ی اولیه",
+          beforeSideMeta: "پاسخ مبهم",
+          beforeStatus: "وعده‌ی پوشیده",
+          beforeNote: "دو نشانه‌ی قابل‌کاهش",
+          afterMeta: "نسخه‌ی طبیعی",
+          afterSideMeta: "پاسخ دقیق‌تر",
+          afterStatus: "صادق و کوتاه",
+          afterNote: "حل مشکل وعده داده نشد",
+          beforeHtml: `<span class="mark issue" data-index="۱">ضمن تشکر از شکیبایی شما</span>، تیم فنی <span class="mark issue" data-index="۲">در اسرع وقت</span> نسبت به <span class="mark issue" data-index="۳">رفع مشکل اعلام‌شده اقدام خواهد نمود</span>.`,
+          afterHtml: `<span class="mark fix" data-index="۱">از شکیبایی شما ممنونیم</span>. تیم فنی <span class="mark fix" data-index="۲">مشکل را بررسی می‌کند</span>.`
+        },
+        {
+          id: "۰۵",
+          genre: "پیام شبکه‌ی اجتماعی",
+          intervention: "بازنویسی",
+          kind: "rewrite",
+          title: "یک دعوت دوستانه، نه بخشنامه",
+          dek: "رسمیت اضافی کنار رفت؛ ساعت و دعوت حفظ شد.",
+          beforeMeta: "نسخه‌ی اولیه",
+          beforeSideMeta: "لحن ناهماهنگ",
+          beforeStatus: "رسمی و خشک",
+          beforeNote: "سه نشانه‌ی لحن اداری",
+          afterMeta: "نسخه‌ی طبیعی",
+          afterSideMeta: "هم‌سطح با مخاطب",
+          afterStatus: "صمیمی و روشن",
+          afterNote: "زمان تغییر نکرد",
+          beforeHtml: `<span class="mark issue" data-index="۱">بدین‌وسیله به اطلاع می‌رساند</span> گردهمایی فردا <span class="mark issue" data-index="۲">در راستای ایجاد تعامل بیشتر برگزار می‌گردد</span>. لطفاً <span class="mark issue" data-index="۳">رأس ساعت هشت تشریف بیاورید</span>.`,
+          afterHtml: `<span class="mark fix" data-index="۱">فردا دورهمی داریم</span>. لطفاً <span class="mark fix" data-index="۲">ساعت هشت بیایید</span>.`
+        },
+        {
+          id: "۰۶",
+          genre: "متن دانشگاهی",
+          intervention: "ویرایش جزئی",
+          kind: "minor",
+          title: "دقت دانشگاهی، بدون بزرگ‌نمایی",
+          dek: "قطعیت و اندازه‌ی ادعا دوباره با شواهد هم‌سطح شد.",
+          beforeMeta: "نسخه‌ی اولیه",
+          beforeSideMeta: "ادعای بزرگ",
+          beforeStatus: "اهمیت‌نمایی",
+          beforeNote: "سه نقطه‌ی پرریسک",
+          afterMeta: "نسخه‌ی طبیعی",
+          afterSideMeta: "ادعای متناسب",
+          afterStatus: "دقیق‌تر",
+          afterNote: "عدم‌قطعیت حفظ شد",
+          beforeHtml: `نتایج <span class="mark issue" data-index="۱">به‌دست‌آمده به‌وضوح</span> نشان می‌دهد که روش پیشنهادی <span class="mark issue" data-index="۲">تحول قابل‌توجهی در این حوزه ایجاد کرده</span> و <span class="mark issue" data-index="۳">می‌تواند نقش کلیدی در پژوهش‌های آینده ایفا کند</span>.`,
+          afterHtml: `نتایج <span class="mark fix" data-index="۱">نشان می‌دهد</span> روش پیشنهادی <span class="mark fix" data-index="۲">در این حوزه اثرگذار بوده است</span> و <span class="mark fix" data-index="۳">ممکن است در پژوهش‌های آینده نیز مفید باشد</span>.`
+        },
+        {
+          id: "۰۷",
+          genre: "مستندات فنی",
+          intervention: "بازنویسی",
+          kind: "rewrite",
+          title: "راهنمای فنی که راه را نشان می‌دهد",
+          dek: "فعل‌ها مستقیم شدند؛ ترتیب کار همان ماند.",
+          beforeMeta: "نسخه‌ی اولیه",
+          beforeSideMeta: "فعل‌های سنگین",
+          beforeStatus: "فنی و اداری",
+          beforeNote: "سه عبارت پُرپیچ‌وخم",
+          afterMeta: "نسخه‌ی طبیعی",
+          afterSideMeta: "راهنمای مستقیم",
+          afterStatus: "شفاف و اجرایی",
+          afterNote: "ترتیب عملیات حفظ شد",
+          beforeHtml: `به‌منظور <span class="mark issue" data-index="۱">استفاده از این نقطه‌ی پایانی</span>، کاربر <span class="mark issue" data-index="۲">می‌بایست ابتدا درخواست را ارسال نموده</span> و سپس <span class="mark issue" data-index="۳">پاسخ را مورد بررسی قرار دهد</span>.`,
+          afterHtml: `<span class="mark fix" data-index="۱">برای استفاده از این نقطه‌ی پایانی</span>، کاربر <span class="mark fix" data-index="۲">ابتدا درخواست را می‌فرستد</span> و <span class="mark fix" data-index="۳">بعد پاسخ را بررسی می‌کند</span>.`
+        },
+        {
+          id: "۰۸",
+          genre: "متن محصول",
+          intervention: "بازنویسی",
+          kind: "rewrite",
+          title: "ترجمه‌وار نیست، اما اصطلاح فنی را نگه می‌دارد",
+          dek: "ساختار جمله فارسی شد؛ مفهوم قابلیت دست‌نخورده ماند.",
+          beforeMeta: "نسخه‌ی اولیه",
+          beforeSideMeta: "ساختار ترجمه‌وار",
+          beforeStatus: "فعل غیرمستقیم",
+          beforeNote: "سه نقطه‌ی قابل‌اصلاح",
+          afterMeta: "نسخه‌ی طبیعی",
+          afterSideMeta: "همان قابلیت",
+          afterStatus: "طبیعی و فنی",
+          afterNote: "اصطلاحات ثابت ماندند",
+          beforeHtml: `این قابلیت <span class="mark issue" data-index="۱">نقش مهمی در تجربه‌ی کاربری بازی می‌کند</span> و به کاربران <span class="mark issue" data-index="۲">اجازه می‌دهد که</span> فایل را بارگذاری کرده و خروجی را <span class="mark issue" data-index="۳">دریافت نمایند</span>.`,
+          afterHtml: `این قابلیت <span class="mark fix" data-index="۱">در تجربه‌ی کار با محصول نقش دارد</span> و کاربران <span class="mark fix" data-index="۲">می‌توانند</span> فایل را بارگذاری کنند و خروجی <span class="mark fix" data-index="۳">بگیرند</span>.`
+        },
+        {
+          id: "۰۹",
+          genre: "فهرست ویژگی‌ها",
+          intervention: "ویرایش جزئی",
+          kind: "minor",
+          title: "ویژگی‌ها، بدون ستاره‌پاشی",
+          dek: "قاب فهرست حفظ شد؛ تعریف کلی از کنار قابلیت‌ها رفت.",
+          beforeMeta: "نسخه‌ی اولیه",
+          beforeSideMeta: "فهرست پُرکننده",
+          beforeStatus: "بولت‌زدگی",
+          beforeNote: "یک مورد بدون پشتوانه",
+          afterMeta: "نسخه‌ی طبیعی",
+          afterSideMeta: "قابلیت‌های واقعی",
+          afterStatus: "فشرده و مشخص",
+          afterNote: "اطلاعات واقعی حفظ شد",
+          beforeHtml: `مزایای این سرویس <span class="mark issue" data-index="۱">عبارت‌اند از</span>: ۱) ثبت درخواست را ساده می‌کند. ۲) گزارش را در اختیار مدیران قرار می‌دهد. ۳) <span class="mark issue" data-index="۲">تجربه‌ای نوآورانه و پیشرفته ایجاد می‌کند</span>.`,
+          afterHtml: `این سرویس <span class="mark fix" data-index="۱">درخواست‌ها را ثبت می‌کند</span> و <span class="mark fix" data-index="۲">گزارش را در اختیار مدیران می‌گذارد</span>.`
+        },
+        {
+          id: "۱۰",
+          genre: "توضیح سامانه",
+          intervention: "بازنویسی",
+          kind: "rewrite",
+          title: "وقتی گذارها راه را شلوغ نمی‌کنند",
+          dek: "رابطه‌های واقعی ماندند؛ اتصال‌دهنده‌های تکراری حذف شدند.",
+          beforeMeta: "نسخه‌ی اولیه",
+          beforeSideMeta: "اتصال‌دهنده‌های تکراری",
+          beforeStatus: "گذارهای مکانیکی",
+          beforeNote: "سه نشانگر زائد",
+          afterMeta: "نسخه‌ی طبیعی",
+          afterSideMeta: "رابطه‌های روشن",
+          afterStatus: "یک‌دست و کوتاه",
+          afterNote: "قابلیت پی‌دی‌اف حفظ شد",
+          beforeHtml: `<span class="mark issue" data-index="۱">علاوه بر این</span>، سامانه گزارش‌ها را ذخیره می‌کند. <span class="mark issue" data-index="۲">همچنین</span>، کاربران می‌توانند گزارش‌ها را به‌صورت پی‌دی‌اف دریافت کنند. <span class="mark issue" data-index="۳">از سوی دیگر</span>، مدیران امکان مشاهده‌ی وضعیت درخواست‌ها را دارند. در نتیجه، این سامانه راهکاری جامع و قدرتمند است.`,
+          afterHtml: `سامانه گزارش‌ها را ذخیره می‌کند و <span class="mark fix" data-index="۱">کاربران می‌توانند گزارش‌ها را به‌صورت پی‌دی‌اف دریافت کنند</span>. <span class="mark fix" data-index="۲">مدیران هم وضعیت درخواست‌ها را می‌بینند</span>.`
+        },
+        {
+          id: "۱۱",
+          genre: "گزارش انتشار",
+          intervention: "نگه‌داری",
+          kind: "keep",
+          title: "متن خوب، همان‌طور که هست",
+          dek: "گاهی بهترین ویرایش، ویرایش نکردن است.",
+          beforeMeta: "نسخه‌ی دریافت‌شده",
+          beforeSideMeta: "طبیعی و روشن",
+          beforeStatus: "بدون ایراد مشخص",
+          beforeNote: "ویرایش توجیهی لازم نبود",
+          afterMeta: "نتیجه‌ی بررسی",
+          afterSideMeta: "همان متن",
+          afterStatus: "بدون تغییر",
+          afterNote: "نگه‌داری آگاهانه",
+          beforeHtml: `نسخه‌ی جدید امروز منتشر شد. زمان بارگذاری صفحه‌ی اصلی کمتر شده و تنظیمات قبلی هم باقی مانده است.`,
+          afterHtml: `نسخه‌ی جدید امروز منتشر شد. زمان بارگذاری صفحه‌ی اصلی کمتر شده و تنظیمات قبلی هم باقی مانده است.`
+        },
+        {
+          id: "۱۲",
+          genre: "متن محاوره‌ای",
+          intervention: "نگه‌داری",
+          kind: "keep",
+          title: "لحن محاوره‌ای، بدون صاف‌کاری",
+          dek: "صدای نویسنده بخشی از متن است، نه یک خطا.",
+          beforeMeta: "نسخه‌ی نویسنده",
+          beforeSideMeta: "لحن شخصی",
+          beforeStatus: "محاوره‌ای و سالم",
+          beforeNote: "تغییر سبکی لازم نیست",
+          afterMeta: "نتیجه‌ی بررسی",
+          afterSideMeta: "همان صدا",
+          afterStatus: "لحن حفظ شد",
+          afterNote: "بدون رسمی‌سازی",
+          beforeHtml: `راستش این برنامه برای کارهای روزمره‌ام بد نیست؛ سریع باز می‌شود، ولی جست‌وجویش هنوز کمی اذیتم می‌کند.`,
+          afterHtml: `راستش این برنامه برای کارهای روزمره‌ام بد نیست؛ سریع باز می‌شود، ولی جست‌وجویش هنوز کمی اذیتم می‌کند.`
+        },
+        {
+          id: "۱۳",
+          genre: "بیان عدم‌قطعیت",
+          intervention: "ویرایش جزئی",
+          kind: "minor",
+          title: "احتمال، جای خودش را حفظ می‌کند",
+          dek: "ویرایش، احتمال را به قطعیت تبدیل نکرد.",
+          beforeMeta: "نسخه‌ی اولیه",
+          beforeSideMeta: "قطعیت ناهماهنگ",
+          beforeStatus: "ادعای کش‌دار",
+          beforeNote: "سه درجه‌ی نامتوازن",
+          afterMeta: "نسخه‌ی طبیعی",
+          afterSideMeta: "احتیاط معنایی",
+          afterStatus: "محتاط و روشن",
+          afterNote: "عدم‌قطعیت حفظ شد",
+          beforeHtml: `این تغییر <span class="mark issue" data-index="۱">احتمالاً می‌تواند</span> باعث <span class="mark issue" data-index="۲">بهبود چشمگیر عملکرد</span> شود و <span class="mark issue" data-index="۳">در همه‌ی شرایط نتیجه‌ی مطلوبی به همراه خواهد داشت</span>.`,
+          afterHtml: `این تغییر <span class="mark fix" data-index="۱">ممکن است عملکرد را بهتر کند</span> و <span class="mark fix" data-index="۲">نتیجه‌ی آن به شرایط اجرا بستگی دارد</span>.`
+        },
+        {
+          id: "۱۴",
+          genre: "راهنمای کاربر",
+          intervention: "ویرایش جزئی",
+          kind: "minor",
+          title: "الزام روشن، بدون زبان سنگین",
+          dek: "شدت الزام باقی ماند؛ فعل طبیعی‌تر شد.",
+          beforeMeta: "نسخه‌ی اولیه",
+          beforeSideMeta: "رسمی و سنگین",
+          beforeStatus: "عبارت اداری",
+          beforeNote: "دو نقطه‌ی قابل‌ساده‌سازی",
+          afterMeta: "نسخه‌ی طبیعی",
+          afterSideMeta: "همان الزام",
+          afterStatus: "مستقیم و دقیق",
+          afterNote: "الزام ضعیف نشد",
+          beforeHtml: `کاربر <span class="mark issue" data-index="۱">موظف است</span> پیش از ادامه، اطلاعات خود را <span class="mark issue" data-index="۲">به‌صورت کامل وارد نماید</span>.`,
+          afterHtml: `کاربر <span class="mark fix" data-index="۱">باید</span> پیش از ادامه، اطلاعاتش را <span class="mark fix" data-index="۲">کامل وارد کند</span>.`
+        },
+        {
+          id: "۱۵",
+          genre: "توضیح قابلیت",
+          intervention: "ویرایش جزئی",
+          kind: "minor",
+          title: "قابلیت آینده، با وعده‌ی دقیق‌تر",
+          dek: "توانمندی حفظ شد؛ جمله دور قابلیت نمی‌چرخد.",
+          beforeMeta: "نسخه‌ی اولیه",
+          beforeSideMeta: "دور از فعل اصلی",
+          beforeStatus: "اسمی‌سازی",
+          beforeNote: "سه بخش برای یک کار",
+          afterMeta: "نسخه‌ی طبیعی",
+          afterSideMeta: "همان قابلیت",
+          afterStatus: "مستقیم و دقیق",
+          afterNote: "زمان آینده حفظ شد",
+          beforeHtml: `این سامانه <span class="mark issue" data-index="۱">قادر خواهد بود</span> <span class="mark issue" data-index="۲">امکان جست‌وجوی سوابق را</span> برای کاربران <span class="mark issue" data-index="۳">فراهم نماید</span>.`,
+          afterHtml: `این سامانه <span class="mark fix" data-index="۱">امکان جست‌وجوی سوابق را</span> برای کاربران <span class="mark fix" data-index="۲">فراهم خواهد کرد</span>.`
+        },
+        {
+          id: "۱۶",
+          genre: "خبر کوتاه",
+          intervention: "ویرایش جزئی",
+          kind: "minor",
+          title: "خبر، جلوتر از تشریفات",
+          dek: "فاعل و زمان خبر روشن ماندند؛ عبارت‌های رسمی کوتاه شدند.",
+          beforeMeta: "نسخه‌ی اولیه",
+          beforeSideMeta: "شروع سنگین",
+          beforeStatus: "خبرِ اداری",
+          beforeNote: "سه عبارت پُرپیچ‌وخم",
+          afterMeta: "نسخه‌ی طبیعی",
+          afterSideMeta: "شروع خبری",
+          afterStatus: "کوتاه و روشن",
+          afterNote: "فاعل و زمان حفظ شد",
+          beforeHtml: `<span class="mark issue" data-index="۱">در پی برگزاری نشست مذکور</span>، مسئول مربوطه <span class="mark issue" data-index="۲">اعلام نمود</span> که پروژه <span class="mark issue" data-index="۳">در آینده‌ی نزدیک وارد مرحله‌ی جدیدی خواهد شد</span>.`,
+          afterHtml: `<span class="mark fix" data-index="۱">پس از این نشست</span>، مسئول پروژه <span class="mark fix" data-index="۲">گفت</span> که پروژه <span class="mark fix" data-index="۳">به‌زودی وارد مرحله‌ی تازه‌ای می‌شود</span>.`
+        },
+        {
+          id: "۱۷",
+          genre: "ایمیل کاری",
+          intervention: "ویرایش جزئی",
+          kind: "minor",
+          title: "ایمیل کاری، محترمانه و قابل‌خواندن",
+          dek: "احترام باقی ماند؛ جمله از پشت عبارت‌های اداری بیرون آمد.",
+          beforeMeta: "نسخه‌ی اولیه",
+          beforeSideMeta: "مجهول و رسمی",
+          beforeStatus: "مکاتبه‌ی اداری",
+          beforeNote: "سه عبارت غیرضروری",
+          afterMeta: "نسخه‌ی طبیعی",
+          afterSideMeta: "همان منظور",
+          afterStatus: "رسمی و ساده",
+          afterNote: "محتوای ایمیل تغییر نکرد",
+          beforeHtml: `<span class="mark issue" data-index="۱">احتراماً به استحضار می‌رساند</span> فایل موردنظر جهت <span class="mark issue" data-index="۲">بررسی و اعلام‌نظر</span> ارسال <span class="mark issue" data-index="۳">می‌گردد</span>.`,
+          afterHtml: `فایل موردنظر برای <span class="mark fix" data-index="۱">بررسی و اعلام نظر</span> ارسال <span class="mark fix" data-index="۲">شده است</span>.`
+        },
+        {
+          id: "۱۸",
+          genre: "توضیح محصول",
+          intervention: "بازنویسی",
+          kind: "rewrite",
+          title: "توضیح محصول، بدون تعریف بی‌پشتوانه",
+          dek: "ستایش کلی حذف شد؛ ادعا در اندازه‌ی اطلاعات موجود ماند.",
+          beforeMeta: "نسخه‌ی اولیه",
+          beforeSideMeta: "ستایش کلی",
+          beforeStatus: "صفت‌های انباشته",
+          beforeNote: "ادعای فراگیر",
+          afterMeta: "نسخه‌ی طبیعی",
+          afterSideMeta: "ادعای محدود",
+          afterStatus: "ساده و محتاط",
+          afterNote: "ویژگی تازه‌ای ساخته نشد",
+          beforeHtml: `این محصول با <span class="mark issue" data-index="۱">طراحی زیبا و کیفیت فوق‌العاده</span>، <span class="mark issue" data-index="۲">انتخابی ایده‌آل برای تمامی افراد</span> و نیازهای شما <span class="mark issue" data-index="۳">می‌باشد</span>.`,
+          afterHtml: `این محصول <span class="mark fix" data-index="۱">برای نیازهای شما طراحی شده است</span>.`
+        },
+        {
+          id: "۱۹",
+          genre: "راهنمای اداری",
+          intervention: "بازنویسی",
+          kind: "rewrite",
+          title: "دستورالعملی که می‌شود همان لحظه اجرا کرد",
+          dek: "اسمی‌سازی‌ها به فعل‌های روشن تبدیل شدند.",
+          beforeMeta: "نسخه‌ی اولیه",
+          beforeSideMeta: "دستورالعمل سنگین",
+          beforeStatus: "عبارت‌های اداری",
+          beforeNote: "دو زنجیره‌ی فعلی",
+          afterMeta: "نسخه‌ی طبیعی",
+          afterSideMeta: "گام‌های روشن",
+          afterStatus: "اجرایی و کوتاه",
+          afterNote: "ترتیب مراحل حفظ شد",
+          beforeHtml: `به منظور ثبت درخواست، <span class="mark issue" data-index="۱">لازم است نسبت به تکمیل فرم مربوطه اقدام نموده</span> و پس از آن <span class="mark issue" data-index="۲">مراتب را ارسال فرمایید</span>.`,
+          afterHtml: `<span class="mark fix" data-index="۱">برای ثبت درخواست، فرم را کامل کنید</span> و سپس <span class="mark fix" data-index="۲">آن را بفرستید</span>.`
+        },
+        {
+          id: "۲۰",
+          genre: "متن حقوقی حساس",
+          intervention: "پرچم‌گذاری",
+          kind: "flag",
+          title: "متن حقوقی، جایی برای حدس نیست",
+          dek: "ابهام باید پرچم بخورد، نه این‌که با ویرایش پنهان شود.",
+          beforeMeta: "نسخه‌ی دریافت‌شده",
+          beforeSideMeta: "نیازمند بررسی حقوقی",
+          beforeStatus: "ابهام حقوقی",
+          beforeNote: "بازنویسی امن نیست",
+          afterMeta: "نتیجه‌ی بررسی",
+          afterSideMeta: "متن عمداً حفظ شد",
+          afterStatus: "نیازمند تصمیم",
+          afterNote: "میزان خسارت روشن نیست",
+          beforeHtml: `طرف دوم <span class="mark flag-mark" data-index="۱">موظف است</span> در صورت تأخیر، <span class="mark flag-mark" data-index="۲">خسارت کامل</span> را <span class="mark flag-mark" data-index="۳">پرداخت نماید</span>.`,
+          afterHtml: `طرف دوم <span class="mark flag-mark" data-index="۱">موظف است</span> در صورت تأخیر، <span class="mark flag-mark" data-index="۲">خسارت کامل</span> را <span class="mark flag-mark" data-index="۳">پرداخت نماید</span>.`
+        }
+      ];
+
+      const params = new URLSearchParams(window.location.search);
+      const requestedCase = Number.parseInt(params.get("case") || "1", 10);
+      const currentCase = cases[Math.min(Math.max(requestedCase, 1), cases.length) - 1];
+
+      const setText = (id, value) => {
+        document.getElementById(id).textContent = value;
+      };
+
+      document.title = `${currentCase.genre}، ${currentCase.title}`;
+      setText("caseNumber", currentCase.id);
+      setText("caseGenre", currentCase.genre);
+      setText("caseIntervention", currentCase.intervention);
+      setText("caseTitle", currentCase.title);
+      setText("caseDek", currentCase.dek);
+      setText("beforeMeta", currentCase.beforeMeta);
+      setText("beforeSideMeta", currentCase.beforeSideMeta);
+      setText("beforeStatus", currentCase.beforeStatus);
+      setText("beforeNote", currentCase.beforeNote);
+      setText("afterMeta", currentCase.afterMeta);
+      setText("afterSideMeta", currentCase.afterSideMeta);
+      setText("afterStatus", currentCase.afterStatus);
+      setText("afterNote", currentCase.afterNote);
+      document.getElementById("beforePanel").className = `panel before ${currentCase.kind}`;
+      document.getElementById("afterPanel").className = `panel after ${currentCase.kind}`;
+      document.getElementById("beforeText").innerHTML = currentCase.beforeHtml;
+      document.getElementById("afterText").innerHTML = currentCase.afterHtml;
+    </script>
+  </body>
+</html>

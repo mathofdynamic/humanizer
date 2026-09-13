@@ -43,6 +43,7 @@ PATH_REFERENCE = re.compile(r"`((?:references|agents|scripts|assets|tests)/[^`\s
 SKILL_NAME = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 JUNK_NAMES = {".DS_Store", "Thumbs.db", "desktop.ini"}
 JUNK_DIRS = {"__pycache__", ".pytest_cache", "node_modules", ".venv", "venv"}
+BINARY_ASSET_SUFFIXES = {".avif", ".gif", ".jpeg", ".jpg", ".pdf", ".png", ".webp"}
 
 
 def relative(path: Path) -> str:
@@ -57,14 +58,14 @@ def validate() -> list[str]:
         if not (ROOT / required).is_file():
             errors.append(f"missing required file: {required}")
 
+    text_by_path: dict[Path, str] = {}
     for path in files:
         if path.name in JUNK_NAMES or path.suffix.lower() in {".pyc", ".pyo", ".tmp", ".bak"}:
             errors.append(f"temporary or generated file present: {relative(path)}")
         if any(part in JUNK_DIRS for part in path.parts):
             errors.append(f"temporary or generated directory present: {relative(path)}")
-
-    text_by_path: dict[Path, str] = {}
-    for path in files:
+        if path.suffix.lower() in BINARY_ASSET_SUFFIXES:
+            continue
         try:
             text = path.read_text(encoding="utf-8")
         except UnicodeDecodeError as exc:
