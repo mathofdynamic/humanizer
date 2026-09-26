@@ -1,0 +1,1884 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Local human-preference judging UI for the Humanizer Persian learning loop.">
+  <title>Humanizer / Round 1 Judge</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f4f1ea;
+      --paper-deep: #ebe6dc;
+      --surface: #fffdf8;
+      --surface-raised: #ffffff;
+      --ink: #1b252b;
+      --ink-soft: #526068;
+      --ink-faint: #7a8589;
+      --line: #d7d8d1;
+      --line-strong: #bbc2bd;
+      --accent: #a94735;
+      --accent-strong: #833327;
+      --accent-soft: #f5dfd8;
+      --sage: #356957;
+      --sage-soft: #dcebe1;
+      --amber: #8a5b19;
+      --amber-soft: #f5e9c8;
+      --danger: #a94735;
+      --shadow: 0 18px 48px rgba(35, 43, 43, 0.08);
+      --shadow-small: 0 5px 18px rgba(35, 43, 43, 0.07);
+      --serif-fa: "Noto Naskh Arabic", "Vazirmatn", "B Nazanin", Tahoma, serif;
+      --sans: "Avenir Next", "Segoe UI", system-ui, sans-serif;
+      --mono: "Cascadia Mono", Consolas, monospace;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        color-scheme: dark;
+        --paper: #182025;
+        --paper-deep: #11181d;
+        --surface: #202a30;
+        --surface-raised: #263238;
+        --ink: #eef0eb;
+        --ink-soft: #b9c2c3;
+        --ink-faint: #8d9a9e;
+        --line: #3d4a4e;
+        --line-strong: #56656a;
+        --accent: #e07b67;
+        --accent-strong: #f19a86;
+        --accent-soft: #422b2a;
+        --sage: #8cc0a3;
+        --sage-soft: #263e36;
+        --amber: #e8bd69;
+        --amber-soft: #413622;
+        --danger: #ef8b77;
+        --shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
+        --shadow-small: 0 5px 18px rgba(0, 0, 0, 0.18);
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      min-width: 320px;
+      background: var(--paper);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 6% 0%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 28rem),
+        radial-gradient(circle at 94% 12%, color-mix(in srgb, var(--sage) 7%, transparent), transparent 32rem),
+        var(--paper);
+      font-family: var(--sans);
+      line-height: 1.5;
+    }
+
+    button, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+    button:disabled { cursor: not-allowed; opacity: 0.45; }
+    ::selection { color: var(--surface); background: var(--accent); }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      border-bottom: 1px solid color-mix(in srgb, var(--line) 86%, transparent);
+      background: color-mix(in srgb, var(--paper) 90%, transparent);
+      backdrop-filter: blur(18px);
+    }
+
+    .topbar-inner,
+    .workspace {
+      width: min(1240px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .topbar-inner {
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: baseline;
+      gap: 13px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      color: var(--accent);
+      font-family: Georgia, serif;
+      font-size: 21px;
+      font-weight: 700;
+      letter-spacing: -0.08em;
+    }
+
+    .brand-name {
+      overflow: hidden;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .brand-context {
+      color: var(--ink-faint);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .top-actions,
+    .button-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 9px;
+    }
+
+    .button {
+      min-height: 38px;
+      padding: 8px 13px;
+      border: 1px solid var(--line-strong);
+      border-radius: 7px;
+      color: var(--ink);
+      background: var(--surface);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      transition: border-color 160ms ease, background 160ms ease, color 160ms ease, transform 160ms ease;
+    }
+
+    .button:hover:not(:disabled) {
+      border-color: var(--accent);
+      color: var(--accent-strong);
+      transform: translateY(-1px);
+    }
+
+    .button:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible,
+    .candidate-card:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--accent) 36%, transparent);
+      outline-offset: 2px;
+    }
+
+    .button-primary {
+      border-color: var(--accent);
+      color: #fffaf4;
+      background: var(--accent);
+    }
+
+    .button-primary:hover:not(:disabled) {
+      color: #fffaf4;
+      background: var(--accent-strong);
+    }
+
+    .button-quiet {
+      border-color: transparent;
+      background: transparent;
+    }
+
+    .button-danger {
+      border-color: color-mix(in srgb, var(--danger) 45%, var(--line));
+      color: var(--danger);
+    }
+
+    .workspace { padding: 48px 0 90px; }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(250px, 0.42fr);
+      gap: 48px;
+      align-items: end;
+      margin-bottom: 34px;
+    }
+
+    .eyebrow,
+    .section-label,
+    .case-index,
+    .candidate-letter,
+    .source-status,
+    .save-status {
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      line-height: 1.4;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      max-width: 780px;
+      margin-bottom: 15px;
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(38px, 6vw, 73px);
+      font-weight: 500;
+      letter-spacing: -0.055em;
+      line-height: 0.98;
+    }
+
+    .hero-copy {
+      max-width: 670px;
+      margin-bottom: 0;
+      color: var(--ink-soft);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .hero-note {
+      padding: 18px 19px;
+      border-left: 3px solid var(--accent);
+      color: var(--ink-soft);
+      background: color-mix(in srgb, var(--surface) 72%, transparent);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    .hero-note strong { color: var(--ink); }
+
+    .source-panel {
+      display: none;
+      margin-bottom: 28px;
+      padding: 18px;
+      border: 1px solid color-mix(in srgb, var(--amber) 45%, var(--line));
+      border-radius: 10px;
+      background: var(--amber-soft);
+    }
+
+    .source-panel.is-visible { display: block; }
+
+    .source-panel h2 {
+      margin-bottom: 6px;
+      font-size: 15px;
+    }
+
+    .source-panel p {
+      margin-bottom: 13px;
+      color: var(--ink-soft);
+      font-size: 12px;
+    }
+
+    .source-panel textarea {
+      display: block;
+      width: 100%;
+      min-height: 150px;
+      margin-bottom: 12px;
+      padding: 12px;
+      border: 1px solid color-mix(in srgb, var(--amber) 48%, var(--line));
+      border-radius: 7px;
+      color: var(--ink);
+      background: color-mix(in srgb, var(--surface) 82%, transparent);
+      font-family: var(--mono);
+      font-size: 11px;
+      line-height: 1.55;
+      resize: vertical;
+    }
+
+    .source-error {
+      min-height: 1.3em;
+      margin: 0 0 10px;
+      color: var(--danger);
+      font-size: 12px;
+    }
+
+    .dashboard-bar {
+      display: grid;
+      grid-template-columns: minmax(210px, 1fr) minmax(230px, 0.75fr) auto;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 26px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--surface) 78%, transparent);
+      box-shadow: var(--shadow-small);
+    }
+
+    .progress-copy {
+      display: flex;
+      align-items: baseline;
+      gap: 9px;
+      min-width: 0;
+    }
+
+    .progress-copy strong {
+      color: var(--ink);
+      font-family: Georgia, serif;
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    .progress-copy span {
+      overflow: hidden;
+      color: var(--ink-faint);
+      font-size: 11px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .progress-track {
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--paper-deep);
+    }
+
+    .progress-fill {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--accent);
+      transition: width 250ms ease;
+    }
+
+    .jump-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--ink-faint);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    select {
+      min-height: 36px;
+      padding: 6px 30px 6px 9px;
+      border: 1px solid var(--line-strong);
+      border-radius: 6px;
+      color: var(--ink);
+      background: var(--surface);
+      font-size: 12px;
+    }
+
+    .case-view[hidden] { display: none; }
+    .dashboard-bar[hidden],
+    .completion-view[hidden] { display: none; }
+
+    .completion-view {
+      display: grid;
+      grid-template-columns: 150px minmax(0, 1fr) minmax(190px, 0.4fr);
+      gap: 34px;
+      align-items: center;
+      min-height: 310px;
+      margin-bottom: 26px;
+      padding: clamp(25px, 5vw, 48px);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--surface) 91%, var(--paper));
+      box-shadow: var(--shadow);
+      animation: completion-arrive 380ms cubic-bezier(.2,.75,.25,1) both;
+    }
+
+    @keyframes completion-arrive {
+      from { opacity: 0; transform: translateY(9px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .completion-mark {
+      display: grid;
+      width: 132px;
+      aspect-ratio: 1;
+      align-content: center;
+      justify-items: center;
+      border: 1px solid color-mix(in srgb, var(--sage) 48%, var(--line));
+      border-radius: 50%;
+      color: var(--sage);
+      background: color-mix(in srgb, var(--sage) 12%, var(--surface));
+    }
+
+    .completion-mark strong {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 52px;
+      font-weight: 500;
+      letter-spacing: -0.07em;
+      line-height: 0.95;
+    }
+
+    .completion-mark span {
+      margin-top: 5px;
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .completion-copy .eyebrow { margin-bottom: 8px; color: var(--sage); }
+
+    .completion-copy h2 {
+      margin-bottom: 10px;
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(31px, 4vw, 48px);
+      font-weight: 500;
+      letter-spacing: -0.045em;
+      line-height: 1;
+    }
+
+    .completion-copy p {
+      max-width: 520px;
+      margin-bottom: 22px;
+      color: var(--ink-soft);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .completion-actions { display: flex; flex-wrap: wrap; gap: 9px; }
+
+    .completion-file {
+      padding: 4px 0 4px 20px;
+      border-left: 1px solid var(--line-strong);
+    }
+
+    .completion-file-label {
+      margin-bottom: 8px;
+      color: var(--ink-faint);
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .completion-file code {
+      display: block;
+      margin-bottom: 12px;
+      color: var(--ink);
+      font-size: 11px;
+      overflow-wrap: anywhere;
+    }
+
+    .completion-file-status {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--sage);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .completion-file-status::before {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      content: "";
+      flex: 0 0 auto;
+    }
+
+    .case-brief {
+      position: sticky;
+      top: 84px;
+      z-index: 15;
+      margin-bottom: 27px;
+      padding: 21px 22px 20px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--surface) 94%, transparent);
+      box-shadow: var(--shadow);
+    }
+
+    .case-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 18px;
+    }
+
+    .case-index { margin-bottom: 6px; }
+
+    .case-title {
+      max-width: 820px;
+      margin-bottom: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(22px, 3vw, 34px);
+      font-weight: 500;
+      letter-spacing: -0.035em;
+      line-height: 1.1;
+    }
+
+    .case-state {
+      flex: 0 0 auto;
+      min-width: 102px;
+      padding: 9px 11px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      color: var(--ink-faint);
+      font-family: var(--mono);
+      font-size: 10px;
+      line-height: 1.35;
+      text-align: right;
+      text-transform: uppercase;
+    }
+
+    .case-state.is-judged {
+      border-color: color-mix(in srgb, var(--sage) 45%, var(--line));
+      color: var(--sage);
+      background: var(--sage-soft);
+    }
+
+    .original-card {
+      overflow: hidden;
+      border: 1px solid color-mix(in srgb, var(--danger) 37%, var(--line));
+      border-radius: 9px;
+      background: color-mix(in srgb, var(--accent-soft) 72%, var(--surface));
+    }
+
+    .original-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 13px;
+      border-bottom: 1px solid color-mix(in srgb, var(--danger) 24%, var(--line));
+      color: var(--danger);
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .original-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .original-tag::before {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      content: "";
+    }
+
+    .original-hint {
+      color: color-mix(in srgb, var(--danger) 70%, var(--ink-faint));
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      text-transform: none;
+    }
+
+    .fa-copy {
+      direction: rtl;
+      font-family: var(--serif-fa);
+      font-size: 18px;
+      line-height: 1.95;
+      text-align: right;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .original-text { padding: 17px 18px 19px; }
+
+    .candidate-section { margin-bottom: 28px; }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    .section-heading h2 {
+      margin-bottom: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 23px;
+      font-weight: 500;
+      letter-spacing: -0.025em;
+    }
+
+    .section-heading p {
+      margin-bottom: 0;
+      color: var(--ink-faint);
+      font-size: 11px;
+    }
+
+    .candidates-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 13px;
+      align-items: start;
+    }
+
+    .candidate-card {
+      position: relative;
+      display: flex;
+      min-height: 100%;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--surface);
+      box-shadow: var(--shadow-small);
+      cursor: pointer;
+      transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease, background 180ms ease;
+    }
+
+    .candidate-card:hover {
+      border-color: var(--line-strong);
+      transform: translateY(-2px);
+    }
+
+    .candidate-card.is-ranked {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent-soft) 24%, var(--surface));
+      box-shadow: 0 9px 24px color-mix(in srgb, var(--accent) 13%, transparent);
+    }
+
+    .candidate-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+      min-height: 76px;
+      padding: 14px 14px 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .candidate-letter {
+      display: grid;
+      width: 31px;
+      height: 31px;
+      flex: 0 0 auto;
+      place-items: center;
+      border: 1px solid var(--line-strong);
+      border-radius: 50%;
+      color: var(--ink);
+      font-size: 12px;
+      letter-spacing: 0;
+    }
+
+    .candidate-card.is-ranked .candidate-letter {
+      border-color: var(--accent);
+      color: var(--accent-strong);
+      background: var(--accent-soft);
+    }
+
+    .candidate-strategy {
+      padding-top: 1px;
+      padding-right: 34px;
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .candidate-strategy small {
+      display: block;
+      margin-top: 3px;
+      color: var(--ink-faint);
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .rank-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: grid;
+      width: 27px;
+      height: 27px;
+      place-items: center;
+      border-radius: 50%;
+      color: #fffaf4;
+      background: var(--accent);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .candidate-body {
+      flex: 1;
+      padding: 15px 16px 11px;
+    }
+
+    .candidate-text {
+      min-height: 135px;
+      color: var(--ink);
+      font-size: 17px;
+    }
+
+    .note-wrap {
+      padding: 0 14px 14px;
+    }
+
+    .note-label {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+      color: var(--ink-soft);
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .note-label span {
+      color: var(--ink-faint);
+      font-family: var(--sans);
+      font-size: 10px;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 64px;
+      padding: 9px 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--ink);
+      background: color-mix(in srgb, var(--paper) 48%, var(--surface));
+      font-size: 12px;
+      line-height: 1.5;
+      resize: vertical;
+    }
+
+    textarea::placeholder { color: var(--ink-faint); opacity: 0.85; }
+    textarea:hover { border-color: var(--line-strong); }
+    textarea:focus { border-color: var(--accent); }
+
+    .decision-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 250px;
+      gap: 18px;
+      margin-top: 30px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: var(--surface);
+      box-shadow: var(--shadow-small);
+    }
+
+    .decision-main,
+    .decision-side { min-width: 0; }
+
+    .field-label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .field-helper {
+      margin: -3px 0 9px;
+      color: var(--ink-faint);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .reason-input {
+      min-height: 110px;
+      font-size: 13px;
+    }
+
+    .confidence-field {
+      margin-bottom: 18px;
+    }
+
+    .confidence-field select { width: 100%; }
+
+    .reject-button {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 48px;
+      padding: 11px 13px;
+      border: 1px dashed var(--line-strong);
+      border-radius: 8px;
+      color: var(--ink-soft);
+      background: transparent;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: left;
+      transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+    }
+
+    .reject-button:hover { border-color: var(--danger); color: var(--danger); }
+
+    .reject-button.is-active {
+      border-style: solid;
+      border-color: var(--danger);
+      color: var(--danger);
+      background: var(--accent-soft);
+    }
+
+    .reject-mark {
+      display: grid;
+      width: 21px;
+      height: 21px;
+      place-items: center;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+      font-family: var(--mono);
+      font-size: 11px;
+      line-height: 1;
+    }
+
+    .nav-bar {
+      position: sticky;
+      bottom: 14px;
+      z-index: 16;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-top: 30px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--surface) 94%, transparent);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .nav-hint {
+      padding-left: 7px;
+      color: var(--ink-faint);
+      font-size: 11px;
+    }
+
+    .nav-buttons { display: flex; gap: 8px; }
+
+    .empty-state {
+      padding: 42px 24px;
+      border: 1px dashed var(--line-strong);
+      border-radius: 10px;
+      color: var(--ink-soft);
+      background: var(--surface);
+      text-align: center;
+    }
+
+    .empty-state strong { display: block; margin-bottom: 6px; color: var(--ink); }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; gap: 22px; }
+      .dashboard-bar { grid-template-columns: 1fr 1fr; }
+      .jump-wrap { justify-self: end; }
+      .decision-panel { grid-template-columns: 1fr; }
+      .completion-view { grid-template-columns: 108px minmax(0, 1fr); gap: 24px; }
+      .completion-mark { width: 108px; }
+      .completion-mark strong { font-size: 44px; }
+      .completion-file { grid-column: 2; padding-left: 0; border-left: 0; }
+    }
+
+    @media (max-width: 620px) {
+      .topbar-inner, .workspace { width: min(100% - 24px, 1240px); }
+      .topbar-inner { min-height: 62px; }
+      .brand-context { display: none; }
+      .top-actions .button-danger { display: none; }
+      .workspace { padding-top: 31px; }
+      h1 { font-size: 46px; }
+      .dashboard-bar { grid-template-columns: 1fr; gap: 11px; }
+      .jump-wrap { justify-self: stretch; justify-content: space-between; }
+      .case-brief { top: 72px; padding: 16px; }
+      .case-heading { gap: 11px; }
+      .case-title { font-size: 25px; }
+      .case-state { min-width: 84px; padding: 7px 8px; font-size: 9px; }
+      .original-head { align-items: flex-start; flex-direction: column; gap: 3px; }
+      .fa-copy { font-size: 17px; }
+      .candidate-text { min-height: 0; font-size: 17px; }
+      .nav-bar { align-items: stretch; flex-direction: column; gap: 8px; }
+      .nav-hint { padding: 0 4px; }
+      .nav-buttons { display: grid; grid-template-columns: repeat(3, 1fr); }
+      .nav-buttons .button { padding-inline: 8px; }
+      .completion-view { grid-template-columns: 1fr; gap: 19px; padding: 24px 20px; }
+      .completion-mark { width: 82px; }
+      .completion-mark strong { font-size: 35px; }
+      .completion-file { grid-column: auto; padding-top: 14px; border-top: 1px solid var(--line); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand" aria-label="Humanizer learning loop">
+        <span class="brand-mark">H/</span>
+        <span class="brand-name">Humanizer</span>
+        <span class="brand-context">Round 01 / preference judge</span>
+      </div>
+      <div class="top-actions">
+        <span id="saveStatus" class="save-status" aria-live="polite">Not loaded</span>
+        <button id="clearButton" class="button button-danger" type="button">Clear saved progress</button>
+        <button id="exportButton" class="button button-primary" type="button" disabled>Export judgments.md</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <section class="hero" aria-labelledby="pageTitle">
+      <div>
+        <div class="eyebrow">Round 01 // 25 cases // human preference</div>
+        <h1 id="pageTitle">Choose the Persian that holds up.</h1>
+        <p class="hero-copy">Click candidates in preference order. The first click is the strongest version; later clicks are acceptable fallbacks. Rank only what you would keep, write the reason you would teach, and leave the original meaning intact.</p>
+      </div>
+      <aside class="hero-note">
+        <strong>One bounded decision.</strong><br>
+        Naturalness is contextual. Formal is not automatically bad, casual is not automatically good, and a fluent rewrite that changes a claim is still a failure.
+      </aside>
+    </section>
+
+    <section id="sourcePanel" class="source-panel" aria-labelledby="sourceTitle">
+      <h2 id="sourceTitle">Paste candidates.md to continue</h2>
+      <p id="sourceMessage">The browser could not fetch the sibling Markdown file. This is expected when the page is opened directly via <code>file://</code>. Paste the contents below; the pasted source is saved locally for the next visit.</p>
+      <textarea id="sourceInput" spellcheck="false" placeholder="Paste learning-loop/round-1/candidates.md here…"></textarea>
+      <p id="sourceError" class="source-error" role="alert"></p>
+      <div class="button-row">
+        <button id="loadPasteButton" class="button button-primary" type="button">Load pasted source</button>
+        <button id="retryFetchButton" class="button" type="button">Retry fetch</button>
+      </div>
+    </section>
+
+    <section class="dashboard-bar" aria-label="Judging progress and navigation">
+      <div class="progress-copy">
+        <strong id="progressText">0 / 25 judged</strong>
+        <span id="progressDetail">Choose a candidate or reject all.</span>
+      </div>
+      <div class="progress-track" role="progressbar" aria-label="Judging progress" aria-valuemin="0" aria-valuemax="25" aria-valuenow="0">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+      <label class="jump-wrap" for="jumpSelect">Jump to <select id="jumpSelect" aria-label="Jump to subject"></select></label>
+    </section>
+
+    <section id="completionView" class="completion-view" aria-labelledby="completionTitle" hidden>
+      <div class="completion-mark" aria-hidden="true">
+        <strong id="completionCount">25</strong>
+        <span>of 25 judged</span>
+      </div>
+      <div class="completion-copy">
+        <div class="eyebrow">Round 01 / complete</div>
+        <h2 id="completionTitle" tabindex="-1">You’re done.</h2>
+        <p>Every subject has a recorded preference. Your judgments are saved to the round file, and this page will reopen at this completion screen.</p>
+        <div class="completion-actions">
+          <button id="reviewButton" class="button" type="button">Review the round</button>
+          <button id="completionExportButton" class="button button-primary" type="button">Download a copy</button>
+        </div>
+      </div>
+      <aside class="completion-file">
+        <div class="completion-file-label">Judgments file</div>
+        <code>learning-loop/round-1/judgments.md</code>
+        <div id="completionSaveStatus" class="completion-file-status">Saved to this browser</div>
+      </aside>
+    </section>
+
+    <section id="caseView" class="case-view" aria-live="polite" hidden>
+      <div class="case-brief">
+        <div class="case-heading">
+          <div>
+            <div id="caseIndex" class="case-index">Subject 01</div>
+            <h2 id="caseTitle" class="case-title"></h2>
+          </div>
+          <div id="caseState" class="case-state">Unjudged</div>
+        </div>
+        <article class="original-card" aria-labelledby="originalLabel">
+          <div class="original-head">
+            <span id="originalLabel" class="original-tag">Bad text / original</span>
+            <span class="original-hint">Read this before comparing</span>
+          </div>
+          <div id="originalText" class="fa-copy original-text" dir="rtl" lang="fa"></div>
+        </article>
+      </div>
+
+      <section class="candidate-section" aria-labelledby="candidateTitle">
+        <div class="section-heading">
+          <h2 id="candidateTitle">Rank the rewrites</h2>
+          <p>Click in order · click again to remove</p>
+        </div>
+        <div id="candidatesGrid" class="candidates-grid"></div>
+      </section>
+
+      <section class="decision-panel" aria-labelledby="decisionTitle">
+        <div class="decision-main">
+          <h2 id="decisionTitle" class="sr-only">Human judgment details</h2>
+          <label class="field-label" for="reasonInput">Why is the top pick better?</label>
+          <p class="field-helper">Be specific. This becomes a rule later: name the pattern, the decision, and what the rewrite preserved.</p>
+          <textarea id="reasonInput" class="reason-input" dir="auto" placeholder="e.g. B fixed the translationese in clause two without touching the protected term in quotes, while A over-corrected the formality register"></textarea>
+        </div>
+        <div class="decision-side">
+          <div class="confidence-field">
+            <label class="field-label" for="confidenceSelect">Confidence</label>
+            <select id="confidenceSelect">
+              <option value="">Choose confidence</option>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+          <button id="rejectButton" class="reject-button" type="button" aria-pressed="false">
+            <span>Reject all — none of these work</span>
+            <span class="reject-mark" aria-hidden="true">×</span>
+          </button>
+        </div>
+      </section>
+
+      <nav class="nav-bar" aria-label="Subject navigation">
+        <div id="navHint" class="nav-hint">Progress and current subject save automatically.</div>
+        <div class="nav-buttons">
+          <button id="previousButton" class="button" type="button">← Previous</button>
+          <button id="skipButton" class="button button-quiet" type="button">Skip</button>
+          <button id="nextButton" class="button button-primary" type="button">Next →</button>
+        </div>
+      </nav>
+    </section>
+
+    <section id="emptyState" class="empty-state" aria-live="polite">
+      <strong>Waiting for candidates.md</strong>
+      <span>Loading the round source…</span>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const SOURCE_PATH = "./candidates.md";
+      const API_PATH = "./api/judgments";
+      const LOCAL_SERVER = location.protocol === "http:" && ["127.0.0.1", "localhost"].includes(location.hostname);
+      const STORAGE_KEYS = {
+        judgments: "humanizer-learning-loop-round-1-judgments-v1",
+        session: "humanizer-learning-loop-round-1-session-v1",
+        pastedSource: "humanizer-learning-loop-round-1-pasted-source-v1"
+      };
+
+      const state = {
+        subjects: [],
+        judgments: {},
+        currentIndex: 0,
+        hasSavedPosition: false,
+        isFinished: false,
+        isFinishing: false,
+        serverSync: false,
+        serverDirty: false,
+        serverVersion: 0,
+        sourceText: "",
+        sourceMode: "fetch"
+      };
+
+      let serverSaveTimer = null;
+      let serverSaveQueue = Promise.resolve();
+
+      const elements = {
+        sourcePanel: document.getElementById("sourcePanel"),
+        sourceInput: document.getElementById("sourceInput"),
+        sourceMessage: document.getElementById("sourceMessage"),
+        sourceError: document.getElementById("sourceError"),
+        loadPasteButton: document.getElementById("loadPasteButton"),
+        retryFetchButton: document.getElementById("retryFetchButton"),
+        saveStatus: document.getElementById("saveStatus"),
+        clearButton: document.getElementById("clearButton"),
+        exportButton: document.getElementById("exportButton"),
+        progressText: document.getElementById("progressText"),
+        progressDetail: document.getElementById("progressDetail"),
+        progressFill: document.getElementById("progressFill"),
+        progressTrack: document.querySelector(".progress-track"),
+        dashboardBar: document.querySelector(".dashboard-bar"),
+        completionView: document.getElementById("completionView"),
+        completionCount: document.getElementById("completionCount"),
+        completionTitle: document.getElementById("completionTitle"),
+        completionSaveStatus: document.getElementById("completionSaveStatus"),
+        reviewButton: document.getElementById("reviewButton"),
+        completionExportButton: document.getElementById("completionExportButton"),
+        jumpSelect: document.getElementById("jumpSelect"),
+        caseView: document.getElementById("caseView"),
+        emptyState: document.getElementById("emptyState"),
+        caseIndex: document.getElementById("caseIndex"),
+        caseTitle: document.getElementById("caseTitle"),
+        caseState: document.getElementById("caseState"),
+        originalText: document.getElementById("originalText"),
+        candidatesGrid: document.getElementById("candidatesGrid"),
+        reasonInput: document.getElementById("reasonInput"),
+        confidenceSelect: document.getElementById("confidenceSelect"),
+        rejectButton: document.getElementById("rejectButton"),
+        previousButton: document.getElementById("previousButton"),
+        skipButton: document.getElementById("skipButton"),
+        nextButton: document.getElementById("nextButton"),
+        navHint: document.getElementById("navHint")
+      };
+
+      function setStatus(message, tone) {
+        elements.saveStatus.textContent = message;
+        elements.saveStatus.style.color = tone === "error" ? "var(--danger)" : tone === "good" ? "var(--sage)" : "";
+      }
+
+      function readStorage(key, fallback) {
+        try {
+          const value = localStorage.getItem(key);
+          return value === null ? fallback : value;
+        } catch (error) {
+          return fallback;
+        }
+      }
+
+      function writeStorage(key, value) {
+        try {
+          localStorage.setItem(key, value);
+          return true;
+        } catch (error) {
+          setStatus("Storage unavailable", "error");
+          return false;
+        }
+      }
+
+      function loadSavedJudgments() {
+        const raw = readStorage(STORAGE_KEYS.judgments, "");
+        if (!raw) return;
+        try {
+          const saved = JSON.parse(raw);
+          if (saved && typeof saved === "object") state.judgments = saved;
+        } catch (error) {
+          state.judgments = {};
+        }
+      }
+
+      function loadSavedSession() {
+        const raw = readStorage(STORAGE_KEYS.session, "");
+        if (!raw) return;
+        try {
+          const saved = JSON.parse(raw);
+          if (saved && Number.isInteger(saved.currentIndex) && saved.currentIndex >= 0) {
+            state.currentIndex = saved.currentIndex;
+            state.hasSavedPosition = true;
+            state.isFinished = saved.isFinished === true;
+          }
+        } catch (error) {
+          state.currentIndex = 0;
+          state.hasSavedPosition = false;
+          state.isFinished = false;
+        }
+      }
+
+      function saveSession() {
+        writeStorage(STORAGE_KEYS.session, JSON.stringify({
+          currentIndex: state.currentIndex,
+          isFinished: state.isFinished,
+          savedAt: new Date().toISOString()
+        }));
+      }
+
+      function parseJudgmentsMarkdown(markdown) {
+        const lines = String(markdown || "").replace(/\r\n?/g, "\n").split("\n");
+        const judgments = {};
+        let current = null;
+
+        function finishSubject() {
+          if (!current) return;
+          const judgment = makeEmptyJudgment();
+          const winner = String(current.winner || "").trim();
+          if (/^None\b/i.test(winner)) {
+            judgment.rejectAll = true;
+          } else if (winner) {
+            judgment.ranking = winner
+              .split(/\s*>\s*/)
+              .map((letter) => letter.trim().toUpperCase())
+              .filter((letter) => /^[A-Z]$/.test(letter));
+          }
+
+          const noteText = String(current.notes || "").trim();
+          if (noteText) {
+            noteText.split(/\s*\|\s*/).forEach((part) => {
+              const match = part.match(/^([A-Z])\s*:\s*(.*)$/i);
+              if (match && match[2].trim()) judgment.notes[match[1].toUpperCase()] = match[2].trim();
+            });
+          }
+          judgment.reason = String(current.reason || "").trim();
+          judgment.confidence = /^(low|medium|high)$/i.test(String(current.confidence || "").trim())
+            ? String(current.confidence).trim().toLowerCase()
+            : "";
+          judgments[String(current.number)] = judgment;
+          current = null;
+        }
+
+        for (const line of lines) {
+          const subjectMatch = line.match(/^##\s+Subject\s+(\d+)\s*$/i);
+          if (subjectMatch) {
+            finishSubject();
+            current = { number: Number(subjectMatch[1]), winner: "", reason: "", notes: "", confidence: "" };
+            continue;
+          }
+          if (!current) continue;
+          if (/^Winner\s+\(or\s+ranked\s+list\):/i.test(line)) current.winner = line.replace(/^.*?:\s*/, "");
+          else if (/^Why\s+this\s+one\s+is\s+better\s+than\s+the\s+others\b/i.test(line)) current.reason = line.replace(/^.*?:\s*/, "");
+          else if (/^What\s+was\s+wrong\s+with\s+the\s+rejected\s+candidates\b/i.test(line)) current.notes = line.replace(/^.*?:\s*/, "");
+          else if (/^Confidence\s+\(low\/medium\/high\):/i.test(line)) current.confidence = line.replace(/^.*?:\s*/, "");
+        }
+        finishSubject();
+        return judgments;
+      }
+
+      async function loadServerJudgments() {
+        if (!LOCAL_SERVER) return;
+        try {
+          const response = await fetch(API_PATH, { cache: "no-store" });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const payload = await response.json();
+          state.judgments = parseJudgmentsMarkdown(payload.markdown || "");
+          state.serverSync = true;
+          state.serverDirty = false;
+          state.serverVersion = 0;
+          writeStorage(STORAGE_KEYS.judgments, JSON.stringify(state.judgments));
+        } catch (error) {
+          state.serverSync = false;
+        }
+      }
+
+      function makeEmptyJudgment() {
+        return {
+          ranking: [],
+          rejectAll: false,
+          reason: "",
+          notes: {},
+          confidence: ""
+        };
+      }
+
+      function getJudgment(subject) {
+        const key = String(subject.number);
+        const saved = state.judgments[key] && typeof state.judgments[key] === "object" ? state.judgments[key] : {};
+        const judgment = {
+          ...makeEmptyJudgment(),
+          ...saved,
+          ranking: Array.isArray(saved.ranking) ? saved.ranking : [],
+          notes: saved.notes && typeof saved.notes === "object" ? saved.notes : {}
+        };
+        judgment.ranking = judgment.ranking.filter((letter) => subject.candidates.some((candidate) => candidate.letter === letter));
+        return judgment;
+      }
+
+      function saveJudgment(subject, judgment) {
+        state.isFinished = false;
+        state.judgments[String(subject.number)] = judgment;
+        writeStorage(STORAGE_KEYS.judgments, JSON.stringify(state.judgments));
+        saveSession();
+        if (state.serverSync) {
+          state.serverDirty = true;
+          state.serverVersion += 1;
+          setStatus("Saving to judgments.md…");
+          scheduleServerSave();
+        } else {
+          const now = new Date();
+          setStatus(`Saved locally ${now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`, "good");
+        }
+        updateProgress();
+      }
+
+      function cleanText(lines) {
+        return lines.join("\n").replace(/^\n+|\n+$/g, "").trim();
+      }
+
+      function parseCandidatesMarkdown(markdown) {
+        const lines = String(markdown || "").replace(/\r\n?/g, "\n").split("\n");
+        const subjects = [];
+        let current = null;
+        let section = null;
+
+        function finishSubject() {
+          if (!current) return;
+          current.badText = cleanText(current.badLines);
+          current.candidates = current.candidates.map((candidate) => ({
+            ...candidate,
+            text: cleanText(candidate.lines)
+          }));
+          delete current.badLines;
+          current.candidates.forEach((candidate) => delete candidate.lines);
+          subjects.push(current);
+          current = null;
+          section = null;
+        }
+
+        for (const line of lines) {
+          const subjectMatch = line.match(/^##\s+Subject\s+(\d+)\s*:\s*(.+?)\s*$/i);
+          if (subjectMatch) {
+            finishSubject();
+            current = {
+              number: Number(subjectMatch[1]),
+              description: subjectMatch[2],
+              badText: "",
+              badLines: [],
+              candidates: []
+            };
+            section = null;
+            continue;
+          }
+
+          if (!current) continue;
+
+          if (/^###\s+Bad text\s+\(original\)(?:\s+—.*)?\s*$/i.test(line)) {
+            section = { kind: "bad", lines: current.badLines };
+            continue;
+          }
+
+          const candidateMatch = line.match(/^###\s+Candidate\s+([A-Z])\s+—\s*(.+?)\s*$/i);
+          if (candidateMatch) {
+            const candidate = {
+              letter: candidateMatch[1].toUpperCase(),
+              strategy: candidateMatch[2],
+              lines: []
+            };
+            current.candidates.push(candidate);
+            section = { kind: "candidate", lines: candidate.lines };
+            continue;
+          }
+
+          if (/^#{1,3}\s+/.test(line)) {
+            section = null;
+            continue;
+          }
+
+          if (section) section.lines.push(line);
+        }
+
+        finishSubject();
+        return subjects.filter((subject) => subject.number && subject.description);
+      }
+
+      function validateSubjects(subjects) {
+        if (!subjects.length) return "No Subject headings were found.";
+        const invalid = subjects.filter((subject) => !subject.badText || subject.candidates.length < 3);
+        if (invalid.length) {
+          return `${invalid.length} subject${invalid.length === 1 ? "" : "s"} is missing original text or has fewer than 3 candidates.`;
+        }
+        return "";
+      }
+
+      function showSourcePanel(message, rawValue) {
+        state.sourceMode = "paste";
+        elements.sourcePanel.classList.add("is-visible");
+        elements.sourceMessage.textContent = message;
+        elements.sourceInput.value = rawValue || "";
+      }
+
+      function showSourceError(message) {
+        elements.sourceError.textContent = message || "";
+      }
+
+      function loadSourceText(raw, mode) {
+        const subjects = parseCandidatesMarkdown(raw);
+        const validationError = validateSubjects(subjects);
+        if (validationError) {
+          showSourceError(validationError);
+          return false;
+        }
+
+        state.sourceText = raw;
+        state.sourceMode = mode;
+        state.subjects = subjects.sort((a, b) => a.number - b.number);
+        state.currentIndex = Math.min(state.currentIndex, state.subjects.length - 1);
+        saveSession();
+        showSourceError("");
+        elements.emptyState.hidden = true;
+        elements.caseView.hidden = false;
+        elements.exportButton.disabled = false;
+        buildJumpMenu();
+        renderApp();
+        if (state.isFinished && state.subjects.every(isJudged)) showCompletion();
+        else state.isFinished = false;
+        const sourceStatus = state.serverSync
+          ? "Live file mode · candidates.md + judgments.md"
+          : mode === "fetch" ? "Loaded from candidates.md" : "Using pasted source";
+        const resumeStatus = state.isFinished
+          ? state.serverSync ? "Round complete · judgments.md saved" : "Round complete · progress saved"
+          : state.hasSavedPosition && state.currentIndex > 0
+            ? `Resumed at subject ${String(state.subjects[state.currentIndex].number).padStart(2, "0")} · ${state.serverSync ? "live file sync" : "local save"}`
+            : sourceStatus;
+        setStatus(resumeStatus, "good");
+        return true;
+      }
+
+      async function fetchSource() {
+        setStatus("Loading source…");
+        try {
+          const response = await fetch(SOURCE_PATH, { cache: "no-store" });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const raw = await response.text();
+          if (!loadSourceText(raw, "fetch")) throw new Error("The fetched file could not be parsed.");
+          elements.sourcePanel.classList.remove("is-visible");
+        } catch (error) {
+          if (LOCAL_SERVER) {
+            elements.sourcePanel.classList.remove("is-visible");
+            elements.emptyState.hidden = false;
+            elements.caseView.hidden = true;
+            elements.exportButton.disabled = true;
+            setStatus("Local judge server unavailable", "error");
+            return;
+          }
+          const savedPaste = readStorage(STORAGE_KEYS.pastedSource, "");
+          const message = "The sibling Markdown file could not be fetched. This is normal for a direct file:// opening; paste the source below or retry from a local server.";
+          showSourcePanel(message, savedPaste);
+          if (savedPaste && loadSourceText(savedPaste, "saved-paste")) {
+            elements.sourcePanel.classList.add("is-visible");
+            setStatus("Using saved pasted source", "good");
+          } else {
+            elements.emptyState.hidden = false;
+            elements.caseView.hidden = true;
+            elements.exportButton.disabled = true;
+            setStatus("Paste source required", "error");
+          }
+        }
+      }
+
+      function buildJumpMenu() {
+        elements.jumpSelect.replaceChildren();
+        state.subjects.forEach((subject, index) => {
+          const option = document.createElement("option");
+          option.value = String(index);
+          option.textContent = `${String(subject.number).padStart(2, "0")} · ${subject.description}`;
+          elements.jumpSelect.append(option);
+        });
+      }
+
+      function isJudged(subject) {
+        const judgment = getJudgment(subject);
+        return judgment.rejectAll || judgment.ranking.length > 0;
+      }
+
+      function updateProgress() {
+        if (!state.subjects.length) return;
+        const judged = state.subjects.filter(isJudged).length;
+        const total = state.subjects.length;
+        elements.progressText.textContent = `${judged} / ${total} judged`;
+        elements.progressDetail.textContent = judged === total ? "All decisions recorded. Finish the round when ready." : "Choose a candidate or reject all.";
+        elements.progressFill.style.width = `${(judged / total) * 100}%`;
+        elements.progressTrack.setAttribute("aria-valuemax", String(total));
+        elements.progressTrack.setAttribute("aria-valuenow", String(judged));
+      }
+
+      function candidateIsRanked(judgment, letter) {
+        return judgment.ranking.indexOf(letter) !== -1;
+      }
+
+      function toggleCandidate(subject, letter) {
+        const judgment = getJudgment(subject);
+        if (judgment.rejectAll) judgment.rejectAll = false;
+        const existingIndex = judgment.ranking.indexOf(letter);
+        if (existingIndex >= 0) judgment.ranking.splice(existingIndex, 1);
+        else judgment.ranking.push(letter);
+        saveJudgment(subject, judgment);
+        renderCase();
+      }
+
+      function makeCandidateCard(subject, candidate, judgment) {
+        const card = document.createElement("article");
+        card.className = "candidate-card";
+        card.tabIndex = 0;
+        card.setAttribute("role", "button");
+        card.setAttribute("aria-pressed", String(candidateIsRanked(judgment, candidate.letter)));
+        card.setAttribute("aria-label", `Candidate ${candidate.letter}: ${candidate.strategy}. Click to rank.`);
+        if (candidateIsRanked(judgment, candidate.letter)) card.classList.add("is-ranked");
+
+        const head = document.createElement("div");
+        head.className = "candidate-head";
+        const letter = document.createElement("span");
+        letter.className = "candidate-letter";
+        letter.textContent = candidate.letter;
+        const strategy = document.createElement("div");
+        strategy.className = "candidate-strategy";
+        strategy.textContent = candidate.strategy;
+        const strategyHint = document.createElement("small");
+        strategyHint.textContent = candidateIsRanked(judgment, candidate.letter) ? "ranked / acceptable" : "click to rank";
+        strategy.append(strategyHint);
+        head.append(letter, strategy);
+
+        const rank = document.createElement("span");
+        rank.className = "rank-badge";
+        const rankNumber = judgment.ranking.indexOf(candidate.letter);
+        rank.textContent = String(rankNumber + 1);
+        rank.hidden = rankNumber < 0;
+        rank.setAttribute("aria-label", rankNumber < 0 ? "Not ranked" : `Rank ${rankNumber + 1}`);
+
+        const body = document.createElement("div");
+        body.className = "candidate-body";
+        const copy = document.createElement("div");
+        copy.className = "fa-copy candidate-text";
+        copy.dir = "rtl";
+        copy.lang = "fa";
+        copy.textContent = candidate.text;
+        body.append(copy);
+
+        const noteWrap = document.createElement("div");
+        noteWrap.className = "note-wrap";
+        const noteLabel = document.createElement("label");
+        noteLabel.className = "note-label";
+        noteLabel.htmlFor = `note-${subject.number}-${candidate.letter}`;
+        noteLabel.textContent = `Candidate ${candidate.letter} note`;
+        const noteHint = document.createElement("span");
+        noteHint.textContent = "worked or failed";
+        noteLabel.append(noteHint);
+        const note = document.createElement("textarea");
+        note.id = `note-${subject.number}-${candidate.letter}`;
+        note.dir = "auto";
+        note.rows = 2;
+        note.placeholder = "What specifically worked or failed?";
+        note.value = judgment.notes[candidate.letter] || "";
+        note.addEventListener("input", () => {
+          const current = getJudgment(subject);
+          current.notes[candidate.letter] = note.value;
+          saveJudgment(subject, current);
+        });
+        noteWrap.append(noteLabel, note);
+
+        card.append(head, rank, body, noteWrap);
+
+        const activate = (event) => {
+          if (event.target.closest("textarea, input, select, button, label")) return;
+          toggleCandidate(subject, candidate.letter);
+        };
+        card.addEventListener("click", activate);
+        card.addEventListener("keydown", (event) => {
+          if ((event.key === "Enter" || event.key === " ") && event.target === card) {
+            event.preventDefault();
+            toggleCandidate(subject, candidate.letter);
+          }
+        });
+
+        return card;
+      }
+
+      function renderCase() {
+        if (!state.subjects.length) return;
+        const subject = state.subjects[state.currentIndex];
+        const judgment = getJudgment(subject);
+        elements.jumpSelect.value = String(state.currentIndex);
+        elements.caseIndex.textContent = `Subject ${String(subject.number).padStart(2, "0")}`;
+        elements.caseTitle.textContent = subject.description;
+        elements.originalText.textContent = subject.badText;
+        elements.caseState.textContent = judgment.rejectAll ? "Reject all" : isJudged(subject) ? `Ranked ${judgment.ranking.length}` : "Unjudged";
+        elements.caseState.classList.toggle("is-judged", isJudged(subject));
+        elements.reasonInput.value = judgment.reason || "";
+        elements.confidenceSelect.value = judgment.confidence || "";
+        elements.rejectButton.classList.toggle("is-active", judgment.rejectAll);
+        elements.rejectButton.setAttribute("aria-pressed", String(judgment.rejectAll));
+        elements.candidatesGrid.replaceChildren(...subject.candidates.map((candidate) => makeCandidateCard(subject, candidate, judgment)));
+        elements.previousButton.disabled = state.currentIndex === 0;
+        elements.nextButton.disabled = false;
+        const isLastSubject = state.currentIndex === state.subjects.length - 1;
+        const allJudged = state.subjects.every(isJudged);
+        elements.nextButton.textContent = isLastSubject ? allJudged ? "Finish round →" : "Find unfinished →" : "Next →";
+        elements.navHint.textContent = judgment.rejectAll
+          ? "All candidates rejected. Progress still saves automatically."
+          : allJudged && isLastSubject
+            ? "All 25 decisions are saved. Finish to close this round."
+            : "Progress and current subject save automatically.";
+        updateProgress();
+      }
+
+      function renderApp() {
+        renderCase();
+        updateProgress();
+      }
+
+      function navigateTo(index) {
+        if (!state.subjects.length) return;
+        state.isFinished = false;
+        elements.completionView.hidden = true;
+        elements.dashboardBar.hidden = false;
+        elements.caseView.hidden = false;
+        state.currentIndex = Math.max(0, Math.min(index, state.subjects.length - 1));
+        saveSession();
+        renderCase();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function showCompletion(moveFocus = false) {
+        const total = state.subjects.length;
+        elements.completionCount.textContent = String(total);
+        elements.completionView.hidden = false;
+        elements.dashboardBar.hidden = true;
+        elements.caseView.hidden = true;
+        elements.completionSaveStatus.textContent = state.serverSync
+          ? "Saved directly to judgments.md"
+          : "Saved in this browser";
+        setStatus(state.serverSync ? "Round complete · judgments.md saved" : "Round complete · progress saved", "good");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        if (moveFocus) elements.completionTitle.focus({ preventScroll: true });
+      }
+
+      function returnToReview() {
+        state.isFinished = false;
+        elements.completionView.hidden = true;
+        elements.dashboardBar.hidden = false;
+        elements.caseView.hidden = false;
+        navigateTo(0);
+      }
+
+      function singleLineText(value) {
+        return String(value || "").replace(/\r?\n/g, " ").replace(/\s+/g, " ").trim();
+      }
+
+      function buildExportMarkdown() {
+        const lines = ["# Round 1 human judgments", ""];
+        state.subjects.forEach((subject) => {
+          const judgment = getJudgment(subject);
+          const winner = judgment.rejectAll ? "None — reject all candidates" : judgment.ranking.join(" > ");
+          const notes = subject.candidates
+            .map((candidate) => {
+              const note = singleLineText(judgment.notes[candidate.letter]);
+              return note ? `${candidate.letter}: ${note}` : "";
+            })
+            .filter(Boolean)
+            .join(" | ");
+          lines.push(
+            `## Subject ${subject.number}`,
+            "",
+            `Winner (or ranked list): ${winner}`,
+            "",
+            `Why this one is better than the others (be specific — what pattern/decision made it work): ${singleLineText(judgment.reason)}`,
+            "",
+            `What was wrong with the rejected candidates (per candidate, briefly): ${notes}`,
+            "",
+            `Confidence (low/medium/high): ${judgment.confidence || ""}`,
+            ""
+          );
+        });
+        return lines.join("\n");
+      }
+
+      async function postServerJudgments(markdown, keepalive = false) {
+        const response = await fetch(API_PATH, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ markdown }),
+          keepalive
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      }
+
+      function scheduleServerSave() {
+        if (!state.serverSync || !state.subjects.length) return;
+        if (serverSaveTimer) window.clearTimeout(serverSaveTimer);
+        serverSaveTimer = window.setTimeout(() => {
+          serverSaveTimer = null;
+          const markdown = buildExportMarkdown();
+          const saveVersion = state.serverVersion;
+          serverSaveQueue = serverSaveQueue
+            .catch(() => {})
+            .then(() => postServerJudgments(markdown))
+            .then(() => {
+              if (state.serverVersion === saveVersion) {
+                state.serverDirty = false;
+                const now = new Date();
+                setStatus(`Saved to judgments.md ${now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`, "good");
+              }
+            })
+            .catch(() => setStatus("Could not save judgments.md", "error"));
+        }, 180);
+      }
+
+      function flushServerSave() {
+        if (!state.serverSync || !state.serverDirty || !state.subjects.length) return;
+        if (serverSaveTimer) {
+          window.clearTimeout(serverSaveTimer);
+          serverSaveTimer = null;
+        }
+        void postServerJudgments(buildExportMarkdown(), true);
+      }
+
+      async function persistServerNow() {
+        if (!state.serverSync) return;
+        if (serverSaveTimer) {
+          window.clearTimeout(serverSaveTimer);
+          serverSaveTimer = null;
+        }
+
+        while (true) {
+          const saveVersion = state.serverVersion;
+          const markdown = buildExportMarkdown();
+          const save = serverSaveQueue
+            .catch(() => {})
+            .then(() => postServerJudgments(markdown));
+          serverSaveQueue = save;
+          await save;
+          if (saveVersion === state.serverVersion) {
+            state.serverDirty = false;
+            return;
+          }
+        }
+      }
+
+      async function finishRound() {
+        if (!state.subjects.length || state.isFinishing) return;
+
+        const unfinishedIndex = state.subjects.findIndex((subject) => !isJudged(subject));
+        if (unfinishedIndex >= 0) {
+          const remaining = state.subjects.filter((subject) => !isJudged(subject)).length;
+          navigateTo(unfinishedIndex);
+          elements.navHint.textContent = `${remaining} subject${remaining === 1 ? "" : "s"} still need a decision. This is the first one.`;
+          setStatus(`${remaining} subject${remaining === 1 ? "" : "s"} still need a decision`, "error");
+          return;
+        }
+
+        state.isFinishing = true;
+        elements.nextButton.disabled = true;
+        elements.nextButton.textContent = "Saving…";
+        elements.navHint.textContent = "Saving the completed round to judgments.md…";
+        try {
+          await persistServerNow();
+          state.isFinished = true;
+          saveSession();
+          showCompletion(true);
+        } catch (error) {
+          state.isFinished = false;
+          saveSession();
+          setStatus("Could not confirm the final save. Click Finish to retry.", "error");
+          elements.navHint.textContent = "Final save failed. Your autosaved work remains; click Finish to retry.";
+          elements.nextButton.textContent = "Retry finish →";
+        } finally {
+          state.isFinishing = false;
+          if (!state.isFinished) elements.nextButton.disabled = false;
+        }
+      }
+
+      function exportJudgments() {
+        if (!state.subjects.length) return;
+        const blob = new Blob([buildExportMarkdown()], { type: "text/markdown;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "judgments.md";
+        document.body.append(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        setStatus("Exported judgments.md", "good");
+      }
+
+      function clearSavedProgress() {
+        if (!window.confirm("Clear all saved judgments for Round 1? Your pasted source will be kept.")) return;
+        try { localStorage.removeItem(STORAGE_KEYS.judgments); } catch (error) { /* continue with in-memory reset */ }
+        try { localStorage.removeItem(STORAGE_KEYS.session); } catch (error) { /* continue with in-memory reset */ }
+        state.judgments = {};
+        state.currentIndex = 0;
+        state.hasSavedPosition = false;
+        state.isFinished = false;
+        elements.completionView.hidden = true;
+        elements.dashboardBar.hidden = false;
+        elements.caseView.hidden = false;
+        renderApp();
+        if (state.serverSync) {
+          state.serverDirty = true;
+          state.serverVersion += 1;
+          scheduleServerSave();
+        }
+        setStatus("Saved judgments cleared", "good");
+      }
+
+      function bindEvents() {
+        elements.reasonInput.addEventListener("input", () => {
+          if (!state.subjects.length) return;
+          const subject = state.subjects[state.currentIndex];
+          const judgment = getJudgment(subject);
+          judgment.reason = elements.reasonInput.value;
+          saveJudgment(subject, judgment);
+        });
+
+        elements.confidenceSelect.addEventListener("change", () => {
+          if (!state.subjects.length) return;
+          const subject = state.subjects[state.currentIndex];
+          const judgment = getJudgment(subject);
+          judgment.confidence = elements.confidenceSelect.value;
+          saveJudgment(subject, judgment);
+        });
+
+        elements.rejectButton.addEventListener("click", () => {
+          if (!state.subjects.length) return;
+          const subject = state.subjects[state.currentIndex];
+          const judgment = getJudgment(subject);
+          judgment.rejectAll = !judgment.rejectAll;
+          if (judgment.rejectAll) judgment.ranking = [];
+          saveJudgment(subject, judgment);
+          renderCase();
+        });
+
+        elements.previousButton.addEventListener("click", () => navigateTo(state.currentIndex - 1));
+        elements.nextButton.addEventListener("click", () => {
+          if (state.currentIndex === state.subjects.length - 1) {
+            finishRound();
+            return;
+          }
+          navigateTo(state.currentIndex + 1);
+        });
+        elements.skipButton.addEventListener("click", () => navigateTo(state.currentIndex + 1));
+        elements.jumpSelect.addEventListener("change", () => navigateTo(Number(elements.jumpSelect.value)));
+        elements.clearButton.addEventListener("click", clearSavedProgress);
+        elements.exportButton.addEventListener("click", exportJudgments);
+        elements.reviewButton.addEventListener("click", returnToReview);
+        elements.completionExportButton.addEventListener("click", exportJudgments);
+
+        elements.sourceInput.addEventListener("input", () => {
+          writeStorage(STORAGE_KEYS.pastedSource, elements.sourceInput.value);
+          showSourceError("");
+        });
+        elements.loadPasteButton.addEventListener("click", () => {
+          const raw = elements.sourceInput.value;
+          writeStorage(STORAGE_KEYS.pastedSource, raw);
+          if (loadSourceText(raw, "paste")) {
+            elements.sourcePanel.classList.add("is-visible");
+            elements.sourceMessage.textContent = "Pasted source loaded. It is saved locally and will be reused if fetch is unavailable.";
+          }
+        });
+        elements.retryFetchButton.addEventListener("click", fetchSource);
+      }
+
+      async function initialize() {
+        loadSavedJudgments();
+        loadSavedSession();
+        bindEvents();
+        window.addEventListener("pagehide", () => {
+          saveSession();
+          flushServerSave();
+        });
+        await loadServerJudgments();
+        await fetchSource();
+      }
+
+      initialize();
+    })();
+  </script>
+</body>
+</html>
