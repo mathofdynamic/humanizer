@@ -78,7 +78,7 @@ Each entry uses the same operational fields:
 
 **False positives / genre license:** formal letters, official notices, ceremonial correspondence.
 
-**Correction:** state the fact, status, or action directly while preserving appropriate politeness.
+**Correction:** lead with the source's content-bearing event, status, action, or request instead of a wrapper. Then retain the context, details, and courtesy the reader needs; do not imply a status or next step absent from the source.
 
 **Forbidden transformation / semantic risk:** do not make support curt or remove required etiquette.
 
@@ -126,9 +126,9 @@ Read [translationese](translationese.md) for detailed cases.
 
 **Cluster signal:** several evaluative adjectives with no mechanism, audience, condition, proof, or observable property.
 
-**False positives / genre license:** deliberate brand voice, slogans, campaigns, or explicitly hyperbolic copy.
+**False positives / genre license:** a requested slogan may keep its rhetorical form, but marketing genre alone does not substantiate a factual evaluation.
 
-**Correction:** use a source-supported capability or benefit; otherwise remove or soften the adjective.
+**Correction:** keep a broad descriptor only when concrete details in the source substantiate the exact claim it summarizes. Otherwise remove it; do not replace it with another unsupported benefit.
 
 **Forbidden transformation / semantic risk:** never manufacture a metric, proof point, customer reaction, market position, or guaranteed result.
 
@@ -140,7 +140,7 @@ Read [translationese](translationese.md) for detailed cases.
 
 **False positives / genre license:** opinion writing, creative brand language, intentional metaphor.
 
-**Correction:** recover the supported actor/action/outcome or keep the metaphor only when it is actually part of the writer's voice.
+**Correction:** recover the supported actor/action/outcome; keep the metaphor only when it is actually part of the writer's voice; retain broad benefit language only when source details substantiate the exact claim.
 
 **Forbidden transformation / semantic risk:** do not invent a mechanism just to make the claim concrete.
 
@@ -200,7 +200,7 @@ Read [translationese](translationese.md) for detailed cases.
 
 **False positives / genre license:** claims directly supported by the study design, data, and cited evidence.
 
-**Correction:** preserve measured uncertainty and scope the claim to the reported conditions.
+**Correction:** preserve measured uncertainty and scope each significance claim to the reported conditions; retain it only when the study design, data, and cited evidence support that exact claim.
 
 **Forbidden transformation / semantic risk:** do not change citation scope, confidence, limitations, or causal status.
 

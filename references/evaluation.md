@@ -102,6 +102,8 @@ Useful comparisons:
 
 Then collect separate ratings for semantic preservation, register, voice, mechanics, and unnecessary intervention.
 
+After recording the initial preference, compare the selected candidate with the original in a separate fabrication check. Flag any added example, actor, intention, promise, or other proposition the source does not support. A natural-sounding addition is still a hard failure, not a positive preference signal; mark the case for correction or re-judgment.
+
 For already-natural cases, ask:
 
 > Is the rewrite actually better than the original?

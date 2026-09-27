@@ -25,6 +25,10 @@ Treat these as protected or semi-protected when they are observable in the sourc
 | characteristic long/short sentence habits | soft protect |
 | parenthetical habit | soft protect; edit only when readability is harmed |
 
+Choose cushioning by communicative burden, not presumed relationship closeness. Soften unwelcome news and larger impositions; keep neutral logistics direct even between close contacts. Then fit the degree of formality to the channel.
+
+For a minor same-day change between close, informal contacts, such as canceling plans with a friend, a plain apology (for example, `ببخشید، امشب نمی‌تونم بیام`) is usually enough and often more natural than adding an explicit sentence that narrates the lateness (such as `می‌دونم دیر خبر می‌دم`). Reserve explicit acknowledgment of the imposition for larger burdens or less-close relationships. Treat this as a drafting preference, not an edit trigger: do not add explicit acknowledgment by default, and do not revise an already-natural, proportionate apology solely to remove its mention of timing. Edit only when the acknowledgment is repetitive or performative in context.
+
 Do not create a generic "better Persian voice." Recover this writer's best version of the existing voice.
 
 ## 2. Intervention gate
@@ -67,6 +71,7 @@ Use when structure is the problem:
 - multiple interacting patterns that cannot be fixed safely by substitution.
 
 Rewrite only the affected span.
+A structural rewrite does not authorize new facts, examples, actors, or follow-up intentions absent from the source or explicit user instruction.
 
 ### FLAG
 

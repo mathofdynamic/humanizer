@@ -26,6 +26,7 @@ Check:
 
 - **actor:** who did or will do the action?
 - **action:** what actually happened or is required?
+- **speech act:** does the rewrite preserve whether the source requests, asks, asserts, offers, or instructs, along with the addressee and requested response?
 - **object:** what is affected?
 - **polarity:** did positive/negative meaning change?
 - **modality:** did `ممکن است`, `احتمالاً`, `باید`, `می‌تواند`, or certainty level change?
@@ -61,6 +62,7 @@ For each changed span, ask:
 3. Could a smaller change have done the job?
 4. Did the edit remove a useful voice fingerprint?
 5. Would `KEEP` have been better?
+6. Does any changed span add an example, actor, motive, promise, observation, or follow-up intention absent from the source and not explicitly authorized? If so, remove it or mark the span `FLAG`.
 
 Already-natural text should survive unchanged except for explicitly permitted mechanical corrections.
 
@@ -72,6 +74,7 @@ Confirm that:
 - formality and politeness fit the audience/channel;
 - academic hedging remains calibrated;
 - legal/administrative force remains intact;
+- broad evaluative claims are retained only when concrete source details support their exact scope; otherwise they are removed or narrowed without invented proof;
 - marketing still persuades without invented evidence;
 - colloquial contractions and dialect remain when intentional;
 - technical terms and code-switching remain stable;
@@ -97,6 +100,7 @@ Treat the result as failed if it:
 - changes a protected factual token without authorization;
 - invents information;
 - changes material modality, causality, scope, capability, or obligation;
+- changes the source's speech act or requested response, such as turning a request to issue a document into a question about the procedure;
 - corrupts code, URLs, tables, paths, or Markdown semantics;
 - replaces stable technical terminology merely for variety;
 - shifts the communicative function by casualizing/formalizing the text;

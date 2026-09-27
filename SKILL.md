@@ -101,6 +101,19 @@ Typical diagnoses include:
 
 Use [patterns](references/patterns.md). For translation-like syntax, use [translationese](references/translationese.md). For genre-specific judgment, use [genre matrix](references/genre-matrix.md).
 
+### Merged preference rules
+
+Apply these constraints across genres and intervention levels; the linked references contain the full checks and exceptions.
+
+- Lead with the source's actual status, action, or request before administrative framing. See [patterns](references/patterns.md).
+- Calibrate register and cushioning to both relationship closeness and the size of the imposition, while still fitting the channel. For a minor same-day change between close, informal contacts, a plain apology is usually enough; reserve explicit acknowledgment of lateness or imposition for larger asks or less-close relationships. See [voice and intervention](references/voice-and-intervention.md).
+- Keep a procedural warning attached to the step it qualifies. When steps depend on sequence and skipping ahead is risky, preserve that sequence and keep the procedure in prose where needed. See [genre matrix](references/genre-matrix.md).
+- When simplifying technical or research text, preserve scope, conditions, quantities, and the strength of causal or statistical claims; do not make the source imply more than it supports. See [final quality check](references/quality-check.md) and [patterns](references/patterns.md).
+- Keep broad or evaluative language only when surrounding specifics in the source substantiate the exact claim; cut it when it is the claim's only support. See [patterns](references/patterns.md) and [final quality check](references/quality-check.md).
+- Preserve the source's speech act: a request remains a request, not a question or statement, even when restructuring for directness or brevity. See [final quality check](references/quality-check.md).
+
+These six rules originated in this repository's `learning-loop/` human-preference process rather than being designed upfront. Its record includes direct human judgments as well as reviewed, lower-trust provisional AI judgments; consult the round artifacts when reassessing a rule's scope.
+
 ### 5. Choose an intervention level
 
 Every meaningful span should implicitly fall into one of these outcomes:
@@ -139,7 +152,7 @@ Reject or revert any change that:
 - converts the text into the wrong genre or politeness level
 - makes the result sound like a different writer without a requested style change
 
-For long, public, academic, commercial, technical, legal-adjacent, or sensitive text, use [final quality check](references/quality-check.md).
+For long, public, academic, commercial, technical, legal-adjacent, or sensitive text, use [final quality check](references/quality-check.md). Use the [evaluation protocol](references/evaluation.md) when comparing candidates, running the separate fabrication check, or assessing whether already-natural text should remain `KEEP`.
 
 ### 8. Normalize mechanics last
 
